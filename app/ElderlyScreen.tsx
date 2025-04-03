@@ -55,7 +55,7 @@ const ElderlyScreen = () => {
             </Text>
           </View>
           <View>
-          <Button title="View Reminders" onPress={() => router.push("/RemindersScreen")} />
+          <Button title="Add Reminders" onPress={() => router.push("/RemindersScreen")} />
             <Button title="Speech Recognition" onPress={() => router.push("/Speechwsymptoms")} />
             <Button title="Calendar " onPress={() => router.push("/CalendarScreen")} />
           </View>

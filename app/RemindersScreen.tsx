@@ -7,6 +7,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as Notifications from "expo-notifications";
 import { NotificationRequestInput } from "expo-notifications";
 import styles from "./stylereminders";
+import { Alert } from "react-native";
 
 
 const Reminders = () => {
@@ -46,7 +47,7 @@ const Reminders = () => {
                 status: "Pending",
             });
 
-            console.log("Saved with ID:", reminderRef.id);
+            Alert.alert("Success", "Reminder created successfully!");
             //scheduleNotification(title, CompletedDate);
             navigation.goBack();
         } catch (error) {

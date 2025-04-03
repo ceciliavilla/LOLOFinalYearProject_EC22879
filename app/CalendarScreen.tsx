@@ -62,14 +62,15 @@ const CalendarScreen = () => {
 
 import React, { useState, useEffect } from "react";
 import { View, Text, ActivityIndicator } from "react-native";
-import { db } from "../firebaseConfig"; // Firestore de Firebase
+import { db } from "../firebaseConfig"; 
 import { collection, getDocs } from "firebase/firestore";
 import { Calendar } from "react-native-calendars";
-import styles from "./stylescalendar"; // Asegúrate de que este archivo existe y tiene los estilos definidos
+import styles from "./stylescalendar"; 
 
 const CalendarScreen = () => {
   const [markDates, setmarkDates] = useState({});
   const [loading, setLoading] = useState(true);
+  
 
   useEffect(() => {
     const fetchReminders = async () => {
@@ -122,5 +123,4 @@ const CalendarScreen = () => {
   );
 };
 
-// ✅ Exportación para poder usarlo en App.js o el sistema de navegación
 export default CalendarScreen;
