@@ -4,11 +4,13 @@ import { auth, db } from "../firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import styles from './styleselderly'; 
 import { useRouter } from 'expo-router';
-import CalendarScreen from "./CalendarScreen";
+import { DocumentData } from "firebase/firestore";
+import { Timestamp } from "firebase/firestore";
+
 
 const ElderlyScreen = () => {
   const router = useRouter();
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState<DocumentData | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -33,7 +35,7 @@ const ElderlyScreen = () => {
 
   const formatBirthDate = (birthDate: string | number | Date) => {
     if (!birthDate) return "N/A";
-    const date = birthDate.toDate ? birthDate.toDate() : new Date(birthDate);
+    const date = birthDate instanceof Timestamp ? birthDate.toDate() : new Date(birthDate);
     return date.toLocaleDateString('en-US', { day: '2-digit', month: 'long' });
   };
 
