@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, Platform } from 'react-native';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from 'expo-router';
 import { auth, db } from '../firebaseConfig';
 import { doc, setDoc } from "firebase/firestore"; 
+import DateTimePicker from '@react-native-community/datetimepicker'; 
 import styles from './stylesignup';
 
 export default function SignUpScreen() {
@@ -11,13 +12,29 @@ export default function SignUpScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [userType, setUserType] = useState('Elderly'); 
+  const [userType, setUserType] = useState('Elderly');  // Default to Elderly
 
-  // Datos adicionales solo para Elderly
+  // Aditional fields for elderly
   const [name, setName] = useState('');
-  const [age, setAge] = useState('');
+  const [lastName, setLastName] = useState(''); 
+  const [birthDate, setBirthDate] = useState<Date | null>(null); // Set initial value to null
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  let userData: {
+    email: string | null;
+    userType: string;
+    createdAt: Date;
+    name?: string;      // Added for Elderly
+    lastName?: string;  // Added for Elderly
+    birthDate?: string; // Added for Elderly
+  } = {
+    email: email,
+    userType: userType,
+    createdAt: new Date(),
+  };
 
   const handleSignUp = async () => {
+    // Check if all fields are filled
     if (!email || !password || !confirmPassword) {
       Alert.alert("Error", "Please fill in all fields.");
       return;
@@ -27,44 +44,44 @@ export default function SignUpScreen() {
       return;
     }
 
-    // Si el usuario es Elderly, validamos que ingrese sus datos
-    if (userType === "Elderly" && (!name.trim() || !age )) {
+    // Check if elderly users have filled additional fields
+    if (userType === "Elderly" && (!name.trim() || !lastName.trim()|| !birthDate)) {
       Alert.alert("Error", "Please fill in all fields for Elderly users.");
       return;
     }
 
     try {
+      // Create user in Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      let userData = {
-        email: user.email,
-        userType: userType, // Elderly, Family o Healthcare
-        createdAt: new Date(),
-      };
-
+      // If the user is Elderly, add extra fields
       if (userType === "Elderly") {
         userData = {
           ...userData,
-          name: name.trim() ,
-          age: parseInt(age),
+          name: name.trim(),
+          lastName: lastName.trim(),
+          birthDate: (birthDate ?? new Date()).toISOString().split('T')[0],
         };
       }
 
-
+      //Save user data in Firestore
       await setDoc(doc(db, "users", user.uid), userData);
 
       Alert.alert("Success", "Account created!");
       router.replace('/'); 
-    } catch (error) {
-      Alert.alert("Error", error.message);
-    }
+    } catch (error: unknown) {
+  const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+  Alert.alert("Error", errorMessage);
+}
+
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Sign Up</Text>
       
+      {/* Email */}
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -74,6 +91,7 @@ export default function SignUpScreen() {
         autoCapitalize="none"
       />
       
+      {/* Password */}
       <TextInput
         style={styles.input}
         placeholder="Password"
@@ -82,6 +100,7 @@ export default function SignUpScreen() {
         secureTextEntry
       />
 
+       {/* Confirm password */}
       <TextInput
         style={styles.input}
         placeholder="Confirm Password"
@@ -90,8 +109,10 @@ export default function SignUpScreen() {
         secureTextEntry
       />
 
+      {/* Additional fields for Elderly users */}
       {userType === "Elderly" && (
         <>
+          {/* Name input */}
           <TextInput
             style={styles.input}
             placeholder="Name"
@@ -99,13 +120,33 @@ export default function SignUpScreen() {
             onChangeText={setName}
           />
 
+          {/* Last name */}
           <TextInput
             style={styles.input}
-            placeholder="Age"
-            value={age}
-            onChangeText={setAge}
-            keyboardType="numeric"
+            placeholder="Last Name"
+            value={lastName}
+            onChangeText={setLastName}
           />
+
+          {/* Select date of birth */}
+          <TouchableOpacity onPress={() => setShowDatePicker(true)}  style={styles.birthDateButton}>
+            <Text style={styles.birthDateText}> {birthDate ? birthDate.toDateString() : "Select Birth Date"} </Text>
+          </TouchableOpacity>
+
+         {/* Show Datepicker */}
+        {showDatePicker && (
+          <DateTimePicker
+          value={birthDate || new Date()}  
+          mode="date"
+          display="default"
+          onChange={(event, selectedDate) => {
+           if (selectedDate) {
+             setBirthDate(selectedDate);
+           }
+          }}
+          style={{ backgroundColor: 'transparent' }}
+          />
+        )}
 
         </>
       )}

@@ -3,13 +3,13 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'lightgreen', // Color de fondo suave
+    backgroundColor: 'lightgreen', 
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
   },
   button: {
-    backgroundColor: '#007BFF', // Azul moderno
+    backgroundColor: '#007BFF', 
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    elevation: 3, // Sombra en Android
+    elevation: 3, 
     width: '90%',
   },
   transcriptText: {
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   symptomsContainer: {
-    backgroundColor: '#E3F2FD', // Azul clarito
+    backgroundColor: '#E3F2FD', 
     padding: 15,
     borderRadius: 10,
     marginTop: 15,
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   recommendationContainer: {
-    backgroundColor: '#FFF3CD', // Amarillo claro
+    backgroundColor: '#FFF3CD', 
     padding: 15,
     borderRadius: 10,
     marginTop: 15,

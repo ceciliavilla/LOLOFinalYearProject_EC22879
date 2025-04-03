@@ -24,6 +24,20 @@ const styles = StyleSheet.create({
       marginBottom: 10,
       color: 'lightgreen'
     },
+    birthDateButton: {
+      backgroundColor: 'transparent', // Keeps it clean
+      paddingHorizontal: 10,
+      borderRadius: 8,
+      width: '80%',
+      height: 40,
+      borderWidth: 1,
+      borderColor: '#fff', // White border
+      justifyContent: 'center',
+      marginBottom: 10,
+    },
+    birthDateText: {
+      color: 'lightgreen', // Makes the text white
+    },
     label: {
       fontSize: 16,
       fontWeight: 'bold',
@@ -43,9 +57,12 @@ const styles = StyleSheet.create({
       marginHorizontal: 5,
       borderRadius: 5,
       alignItems: 'center',
+      color: 'white',
     },
     selectedButton: {
       backgroundColor: 'lightgreen',
+      color: 'darkgreen'
+      
     },
     button: {
       backgroundColor: 'lightgrey',
@@ -66,8 +83,9 @@ const styles = StyleSheet.create({
     buttonuserText: {
       fontSize: 18,
       fontWeight: 'bold',
-      color: 'white'
+      color: 'white',
     },
+    
   });
 
 export default styles;

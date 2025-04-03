@@ -191,7 +191,7 @@ export default function SpeechScreen() {
   const [diseasesList, setDiseasesList] = useState([]);
   const db = getFirestore(firebaseApp);
 
-  // ✅ Cargar enfermedades desde Firestore
+  // Load Diseases 
   useEffect(() => {
     const fetchDiseases = async () => {
       const querySnapshot = await getDocs(collection(db, "diseases_database"));
@@ -206,7 +206,7 @@ export default function SpeechScreen() {
     fetchDiseases();
   }, []);
 
-  // ✅ Función para empezar a grabar
+  // START RECORDING
   async function startRecording() {
     try {
       const perm = await Audio.requestPermissionsAsync();
@@ -223,7 +223,7 @@ export default function SpeechScreen() {
     }
   }
 
-  // ✅ Función para detener la grabación y transcribir
+  // STOP RECORDING AND TRANSCRIBE
   async function stopRecording() {
     setRecording(undefined);
     await recording.stopAndUnloadAsync();
@@ -233,7 +233,7 @@ export default function SpeechScreen() {
     await uploadAndTranscribeAudio(uri);
   }
 
-  // ✅ Subir a AssemblyAI y obtener la transcripción
+  // UPLOAD AUDIO AND REQUEST TRANSCRIPTION FROM ASSEMBLYAI
   const uploadAndTranscribeAudio = async (audioUri) => {
     try {
       setLoading(true);
@@ -271,12 +271,12 @@ export default function SpeechScreen() {
       console.log('📝 Transcript:', transcribedText);
       setTranscript(transcribedText);
 
-      // ✅ Detectar síntomas y calcular la enfermedad más probable
+      // DETECT SYMPTOMS AND CHECK WHICH ONE IS MORE PROBABLE
       const detectedSymptoms = detectSymptoms(transcribedText);
       const mostProbableDiseases = findMostProbableDiseases(detectedSymptoms);
 
     const recommendationText = mostProbableDiseases.length > 0
-      ? `Most probable diseases:\n${mostProbableDiseases.map(d => `🔹 ${d.name} (Matched Symptoms: ${d.matchedSymptoms.join(', ')})`).join('\n')}`
+      ? `Your symptoms are matched with the following, consult the doctor :\n${mostProbableDiseases.map(d => `${d.name} (Matched Symptoms: ${d.matchedSymptoms.join(', ')})`).join('\n')}`
       : "No disease detected. Please consult a doctor.";
 
     setRecommendation(recommendationText);
@@ -288,7 +288,7 @@ export default function SpeechScreen() {
     };
 
 
-  // ✅ Detectar síntomas con base en Firestore
+  // DETECT SYMPTOMS WITH FIREBASE
   function detectSymptoms(text) {
     const detectedSymptoms = [];
     const normalizedText = text.toLowerCase();
@@ -298,7 +298,7 @@ export default function SpeechScreen() {
         const normalizedSymptom = symptom.toLowerCase().replace(/_/g, ' ');
         const regex = new RegExp(`\\b${normalizedSymptom}\\b`, 'i');
         if (regex.test(normalizedText)) {
-          detectedSymptoms.push(symptom); // Mantiene el formato original
+          detectedSymptoms.push(symptom); 
         }
       });
     });
@@ -351,7 +351,7 @@ export default function SpeechScreen() {
     return bestMatches;
 }
 
-  // ✅ Renderizar la aplicación
+
   return (
     <View style={styles.container}>
   <TouchableOpacity style={styles.button} onPress={recording ? stopRecording : startRecording}>

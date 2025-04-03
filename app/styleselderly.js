@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
 });
 
 export default styles;*/
-/*import { StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
 });
 
 export default styles;
-import { StyleSheet } from 'react-native';
+/*import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
@@ -133,8 +133,8 @@ const styles = StyleSheet.create({
     color: "#888",
   },
 });
-export default styles;*/ 
-import { StyleSheet } from "react-native";
+export default styles;
+/*import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
@@ -182,6 +182,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
+  RemindContainer: {
+    flex: 1,
+    backgroundColor: "lightblue", // Color de fondo más limpio
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+  },
   emergencyButton: {
     backgroundColor: "#E74C3C", // Rojo para emergencias
   },
@@ -192,4 +199,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default styles;
+export default styles;*/

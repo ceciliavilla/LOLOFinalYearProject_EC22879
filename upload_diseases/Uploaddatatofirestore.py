@@ -24,6 +24,6 @@ for index, row in df.iterrows():
         'symptoms': symptoms_list
     })
 
-    print(f'✅ Uploaded: {disease_name} with symptoms {symptoms_list}')
+    print(f'Uploaded: {disease_name} with symptoms {symptoms_list}')
 
-print('🎉 Data upload completed successfully.')
+print('Upload completed successfully.')

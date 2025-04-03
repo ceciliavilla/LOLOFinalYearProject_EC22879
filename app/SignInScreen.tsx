@@ -24,7 +24,7 @@ export default function SignInScreen() {
         return;
       }
   
-      const userType = userDoc.data().userType; // Obtenemos el tipo de usuario
+      const userType = userDoc.data().userType; // Getting type of user
 
       if (userType === "Elderly") {
         router.replace("/ElderlyScreen");

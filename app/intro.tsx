@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import styles from './stylesintro';
+import styles from './stylesintro'; // Import Styles 
 
 
 export default function IntroScreen({ navigation } : any) {

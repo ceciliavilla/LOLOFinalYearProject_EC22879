@@ -1,25 +1,25 @@
 import pandas as pd
 
-# Leer el CSV original
+# Read original CSV 
 df = pd.read_csv('diseases.csv')
 
-# Crear diccionario para agrupar síntomas por enfermedad
+# Create a dictionary to group symptoms and diseases
 disease_symptoms_dict = {}
 
-# Recorrer filas del CSV
-for index, row in df.iterrows():
-    disease_name = row['Disease'].strip()  # Limpiar espacios
 
-    # Obtener todos los síntomas de esa fila (ignorando vacíos)
+for index, row in df.iterrows():
+    disease_name = row['Disease'].strip()  # Remove spaces
+
+   # Obtaining all symptoms from that row (ignoring empty values)
     symptoms_list = [str(row[col]).strip() for col in df.columns[1:] if pd.notna(row[col])]
     
-    # Añadir síntomas al diccionario, asegurando que no haya duplicados
+    # Add symptoms to the dictionary, ensuring no duplicates
     if disease_name in disease_symptoms_dict:
         disease_symptoms_dict[disease_name].update(symptoms_list)
     else:
-        disease_symptoms_dict[disease_name] = set(symptoms_list)  # Usamos set para no repetir síntomas
+        disease_symptoms_dict[disease_name] = set(symptoms_list)  
 
-# Crear nuevo DataFrame limpio
+# Create a new cleaned DataFrame
 cleaned_data = {
     'Disease': [],
     'Symptoms': []
@@ -27,10 +27,11 @@ cleaned_data = {
 
 for disease, symptoms in disease_symptoms_dict.items():
     cleaned_data['Disease'].append(disease)
-    cleaned_data['Symptoms'].append(', '.join(symptoms))  # Unir los síntomas en una sola cadena separada por comas
+    cleaned_data['Symptoms'].append(', '.join(symptoms))   # Join symptoms into a single comma-separated string
 
-# Guardar como nuevo CSV limpio
+
+#  Save as a new cleaned CSV
 clean_df = pd.DataFrame(cleaned_data)
 clean_df.to_csv('diseases_clean.csv', index=False)
 
-print('✅ CSV limpio creado como "diseases_clean.csv". Revisa la carpeta.')
+
