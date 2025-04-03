@@ -5,27 +5,29 @@ import { db } from "../firebaseConfig"; // Firestore importado
 import { collection, addDoc } from "firebase/firestore";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as Notifications from "expo-notifications";
+import { NotificationRequestInput } from "expo-notifications";
 import styles from "./stylereminders";
+
 
 const Reminders = () => {
     const navigation = useNavigation();
     const [title, setTitle] = useState("");
-    const [date, setDate] = useState(null);
-    const [time, setTime] = useState(null);
+    const [date, setDate] = useState<Date | null>(null);
+    const [time, setTime] = useState<Date | null>(null);
     const [ChooseDate, setChooseDate] = useState(false);
     const [ChooseTime, setChooseTime] = useState(false);
   
     // Choose Date
-    const DateElection = (selectedDate: React.SetStateAction<null>) => {
+    const DateElection = (selectedDate: Date) => {
         setDate(selectedDate);
         setChooseDate(false);
-      };
+      };      
     
     // Choose Time
-    const TimeElection = (selectedTime) => {
+    const TimeElection = (selectedTime: Date) => {
         setTime(selectedTime);
         setChooseTime(false);
-    };
+      };
 
     // Save to Firestore and Set Notification
     const saveReminder = async () => {
@@ -45,7 +47,7 @@ const Reminders = () => {
             });
 
             console.log("Saved with ID:", reminderRef.id);
-            scheduleNotification(title, CompletedDate);
+            //scheduleNotification(title, CompletedDate);
             navigation.goBack();
         } catch (error) {
             console.error("Error", error);
@@ -53,16 +55,19 @@ const Reminders = () => {
     };
       
     // Set Notification
-    const scheduleNotification = async (title, CompletedDate) => {
+   /* const scheduleNotification = async (title: string, CompletedDate: Date) => {
         await Notifications.scheduleNotificationAsync({
             content: {
                 title: "Reminder",
                 body: `${title} - ${CompletedDate.toLocaleString()}`,
                 sound: true,
             },
-            trigger: CompletedDate,
+            trigger: {
+                seconds: secondsUntil,
+      repeats: false,
+              },
         });
-    };
+    };*/
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
