@@ -3,7 +3,7 @@ const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
         padding: 20,
-        backgroundColor: "#F5F5F5",
+        backgroundColor: "#009D71",
         alignItems: "center",
         justifyContent: "center",
     },
@@ -11,11 +11,12 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: "bold",
         marginBottom: 20,
+        color: "lightgreen",
     },
     input: {
         width: "90%",
         borderBottomWidth: 1,
-        borderColor: "#ccc",
+        borderColor: "white",
         marginBottom: 20,
         fontSize: 16,
         padding: 10,
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     button: {
-        backgroundColor: "#007bff",
+        backgroundColor: "lightgreen",
         padding: 15,
         borderRadius: 10,
         marginBottom: 10,
@@ -31,11 +32,12 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     buttonText: {
-        color: "#fff",
+        color: "#009D71",
         fontSize: 16,
+        fontWeight: "bold",
     },
     saveButton: {
-        backgroundColor: "#28a745",
+        backgroundColor: "lightblue",
         padding: 15,
         borderRadius: 10,
         width: "90%",
