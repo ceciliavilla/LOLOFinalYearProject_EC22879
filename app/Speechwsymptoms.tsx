@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Button } from 'react-native';
 import { Audio } from 'expo-av';
 import { getFirestore, collection, getDocs } from "firebase/firestore";
-import { firebaseApp } from '../firebaseConfig'; // Ajusta la ruta según sea necesario
-import styles from './stylespeech.js';
+import { firebaseApp } from '../firebaseConfig'; 
+import styles from './styles/stylespeech';
+//import styles from './styles/stylespeech.js/index.js';
 
 const ASSEMBLYAI_API_KEY = "3f48dff71e3b4d239fc526e04a1d9564";
 

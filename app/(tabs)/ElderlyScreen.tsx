@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Button, ScrollView } from "react-native";
-import { auth, db } from "../firebaseConfig"; 
+import { auth, db } from "../../firebaseConfig"; 
 import { doc, getDoc } from "firebase/firestore";
-import styles from './styleselderly'; 
+import styles from '../styles/styleselderly'; 
 import { useRouter } from 'expo-router';
 import { DocumentData } from "firebase/firestore";
 import { Timestamp } from "firebase/firestore";
+import { TouchableOpacity } from 'react-native';
+
 
 
 const ElderlyScreen = () => {
@@ -20,7 +22,7 @@ const ElderlyScreen = () => {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const data = docSnap.data();
-          console.log(data); // Verify the data
+          console.log(data); 
           setUserData(data);
         } else {
           console.log("No such document!");
@@ -54,12 +56,19 @@ const ElderlyScreen = () => {
               Birth Date: {formatBirthDate(userData.birthDate)}
             </Text>
           </View>
-          <View>
-          <Button title="Add Reminders" onPress={() => router.push("/RemindersScreen")} />
-            <Button title="Speech Recognition" onPress={() => router.push("/Speechwsymptoms")} />
-            <Button title="Calendar " onPress={() => router.push("/CalendarScreen")} />
-            <Button title="Calendar2 " onPress={() => router.push("/Calendar2")} />
-          </View>
+          <View style={styles.container}>
+  <TouchableOpacity style={styles.button} onPress={() => router.push("/RemindersScreen")}>
+    <Text style={styles.buttonText}>Add Reminders</Text>
+  </TouchableOpacity>
+
+  <TouchableOpacity style={styles.button} onPress={() => router.push("/Speechwsymptoms")}>
+    <Text style={styles.buttonText}>Speech Recognition</Text>
+  </TouchableOpacity>
+
+  <TouchableOpacity style={styles.button} onPress={() => router.push("/Calendar2")}>
+    <Text style={styles.buttonText}>Calendar</Text>
+  </TouchableOpacity>
+</View>
         </>
       ) : (
         <Text>Loading user data...</Text>
@@ -69,3 +78,4 @@ const ElderlyScreen = () => {
 };
 
 export default ElderlyScreen;
+

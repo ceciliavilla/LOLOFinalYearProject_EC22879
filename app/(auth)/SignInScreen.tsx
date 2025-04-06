@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from 'expo-router';
-import styles from './stylesignin'; 
+import styles from '../styles/stylesignin'; 
 import { doc, getDoc } from "firebase/firestore";
-import { auth, db } from '../firebaseConfig';
+import { auth, db } from '../../firebaseConfig';
 
 
 export default function SignInScreen() {
@@ -27,7 +27,7 @@ export default function SignInScreen() {
       const userType = userDoc.data().userType; // Getting type of user
 
       if (userType === "Elderly") {
-        router.replace("/ElderlyScreen");
+        router.replace("/(tabs)/ElderlyScreen");
       } else if (userType === "Family") {
         router.replace("/RelativesScreen");
       } else {

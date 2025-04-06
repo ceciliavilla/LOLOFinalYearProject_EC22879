@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, Platform } from 'react-native';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from 'expo-router';
-import { auth, db } from '../firebaseConfig';
+import { auth, db } from '../../firebaseConfig';
 import { doc, setDoc } from "firebase/firestore"; 
 import DateTimePicker from '@react-native-community/datetimepicker'; 
-import styles from './stylesignup';
+import styles from '../styles/stylesignup';
 
 export default function SignUpScreen() {
   const router = useRouter();

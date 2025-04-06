@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import styles from './styleshome'; // Importamos los estilos desde un archivo separado
+import styles from './styles/styleshome'; // Importamos los estilos desde un archivo separado
 
 
 

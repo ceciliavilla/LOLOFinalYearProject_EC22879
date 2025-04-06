@@ -4,7 +4,7 @@ import { collection, addDoc } from "firebase/firestore";
 import { View, Text, TextInput, TouchableOpacity, ScrollView} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import styles from "./stylereminders";
+import styles from "./styles/stylereminders";
 import { Alert } from "react-native";
 
 
