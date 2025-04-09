@@ -7,6 +7,9 @@ import { useRouter } from 'expo-router';
 import { DocumentData } from "firebase/firestore";
 import { Timestamp } from "firebase/firestore";
 import { TouchableOpacity } from 'react-native';
+import { useFocusEffect } from "expo-router";
+import { useCallback } from "react";
+
 
 
 
@@ -14,26 +17,27 @@ const ElderlyScreen = () => {
   const router = useRouter();
   const [userData, setUserData] = useState<DocumentData | null>(null);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const user = auth.currentUser;
-      if (user) {
-        const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          console.log(data); 
-          setUserData(data);
-        } else {
-          console.log("No such document!");
-        }
-      } else {
-        console.log("No user is signed in.");
-      }
-    };
-
-    fetchUserData();
-  }, []);
+    useFocusEffect(
+      useCallback(() => {
+        const fetchUserData = async () => {
+          const user = auth.currentUser;
+          if (user) {
+            const docRef = doc(db, "users", user.uid);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+              const data = docSnap.data();
+              setUserData(data);
+            } else {
+              console.log("No such document!");
+            }
+          } else {
+            console.log("No user is signed in.");
+          }
+        };
+  
+        fetchUserData();
+      }, [])
+    );
 
   const formatBirthDate = (birthDate: string | number | Date) => {
     if (!birthDate) return "N/A";
@@ -50,7 +54,7 @@ const ElderlyScreen = () => {
         <>
           <View style={styles.userInfoContainer}>
             <Text style={styles.info}>
-              Name: {userData.name || "User"}
+              User: {userData.name|| "User"} {userData.lastName || "User"}
             </Text>
             <Text style={styles.info}>
               Birth Date: {formatBirthDate(userData.birthDate)}
