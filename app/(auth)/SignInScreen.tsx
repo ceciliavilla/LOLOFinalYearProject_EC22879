@@ -29,7 +29,7 @@ export default function SignInScreen() {
       if (userType === "Elderly") {
         router.replace("/(tabs)/ElderlyScreen");
       } else if (userType === "Family") {
-        router.replace("/RelativesScreen");
+        router.replace('/(tabs)/FamilyScreen');
       } else {
         Alert.alert("Error", "User type not recognized.");
       }
