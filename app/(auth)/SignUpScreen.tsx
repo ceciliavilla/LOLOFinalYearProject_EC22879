@@ -24,8 +24,8 @@ export default function SignUpScreen() {
     email: string | null;
     userType: string;
     createdAt: Date;
-    name?: string;      // Added for Elderly
-    lastName?: string;  // Added for Elderly
+    name?: string;    
+    lastName?: string;  
     birthDate?: string; // Added for Elderly
   } = {
     email: email,
@@ -45,8 +45,12 @@ export default function SignUpScreen() {
     }
 
     // Check if elderly users have filled additional fields
-    if (userType === "Elderly" && (!name.trim() || !lastName.trim()|| !birthDate)) {
-      Alert.alert("Error", "Please fill in all fields for Elderly users.");
+    if (!name.trim() || !lastName.trim()) {
+      Alert.alert("Error", "Please fill in all fields.");
+      return;
+    }
+    if (userType === "Elderly" && !birthDate) {
+      Alert.alert("Error", "Please select your birth date.");
       return;
     }
 
@@ -55,14 +59,14 @@ export default function SignUpScreen() {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // If the user is Elderly, add extra fields
+      userData = {
+        ...userData,
+        name: name.trim(),
+        lastName: lastName.trim(),
+      };
+      
       if (userType === "Elderly") {
-        userData = {
-          ...userData,
-          name: name.trim(),
-          lastName: lastName.trim(),
-          birthDate: (birthDate ?? new Date()).toISOString().split('T')[0],
-        };
+        userData.birthDate = (birthDate ?? new Date()).toISOString().split('T')[0];
       }
 
       //Save user data in Firestore
@@ -108,12 +112,8 @@ export default function SignUpScreen() {
         onChangeText={setConfirmPassword}
         secureTextEntry
       />
-
-      {/* Additional fields for Elderly users */}
-      {userType === "Elderly" && (
-        <>
-          {/* Name input */}
-          <TextInput
+      {/* Name input */}
+      <TextInput
             style={styles.input}
             placeholder="Name"
             value={name}
@@ -128,6 +128,11 @@ export default function SignUpScreen() {
             onChangeText={setLastName}
           />
 
+
+      {/* Additional fields for Elderly users */}
+      {userType === "Elderly" && (
+        <>
+        
           {/* Select date of birth */}
           <TouchableOpacity onPress={() => setShowDatePicker(true)}  style={styles.birthDateButton}>
             <Text style={styles.birthDateText}> {birthDate ? birthDate.toDateString() : "Select Birth Date"} </Text>

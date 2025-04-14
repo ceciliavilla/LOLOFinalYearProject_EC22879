@@ -12,6 +12,8 @@ export default function ProfileScreen() {
   const auth = getAuth(firebaseApp);
   const db = getFirestore(firebaseApp);
   const user = auth.currentUser;
+  const [userType, setUserType] = useState('');
+
 
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
@@ -35,6 +37,7 @@ export default function ProfileScreen() {
             setEmail(data.email || '');
             setName(data.name || '');
             setLastName(data.lastName || '');
+            setUserType(data.userType || '');
             setBirthDate(
               data.birthDate instanceof Timestamp ? data.birthDate.toDate() : new Date(data.birthDate));
           }
@@ -149,36 +152,30 @@ export default function ProfileScreen() {
       <Text style={styles.label}>Last Name</Text>
       <TextInput style={styles.input} value={lastName} onChangeText={setLastName} />
 
-      <Text style={styles.label}>Email</Text>
-      <TextInput
-        style={styles.input}
-        value={email}
-        onChangeText={setEmail}
-        placeholder="Enter your email"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        autoCorrect={false}
-        textContentType="emailAddress"
+      {userType === 'Elderly' && (
+  <>
+    <Text style={styles.label}>Birth Date</Text>
+    <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+      <Text style={styles.birthDateInput}>
+        {birthDate ? formatBirthDate(birthDate) : "Select Birth Date"}
+      </Text>
+    </TouchableOpacity>
+
+    {showDatePicker && (
+      <DateTimePicker
+        value={birthDate ? new Date(birthDate) : new Date()}
+        mode="date"
+        display="default"
+        onChange={(event, selectedDate) => {
+          setShowDatePicker(false);
+          if (event.type === 'set' && selectedDate) {
+            setBirthDate(selectedDate);
+          }
+        }}
       />
-
-      <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-      <Text style={styles.birthDateInput}>Birth Date: {birthDate ? formatBirthDate(birthDate) : "N/A"} </Text>
-      </TouchableOpacity>
-
-      {showDatePicker && (
-        <DateTimePicker
-          value={birthDate ? new Date(birthDate) : new Date()}
-          mode="date"
-          display="default"
-          onChange={(event, selectedDate) => {
-            setShowDatePicker(false);
-            if (event.type === 'set' && selectedDate) {
-              setBirthDate(selectedDate);
-            }
-          }}
-        />
-      )}
-
+    )}
+  </>
+)}
       <Text style={styles.label}>Current Password</Text>
       <TextInput
         style={styles.input}

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ActivityIndicator, FlatList } from "react-native";
-import { db } from "../firebaseConfig";
+import { db, auth } from "../firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 import { Calendar } from "react-native-calendars";
 import styles from "./styles/stylescalendar";
+import { query, where } from "firebase/firestore";
 
 const Calendar2 = () => {
   const [markDates, setmarkDates] = useState<Record<string, MarkedDate>>({});
@@ -33,7 +34,12 @@ const Calendar2 = () => {
   useEffect(() => {
     const loadReminders = async () => {
       try {
-        const remindersfromDB = await getDocs(collection(db, "reminders"));
+        const userId = auth.currentUser?.uid;
+if (!userId) return;
+
+const remindersRef = collection(db, "reminders");
+const remindersQuery = query(remindersRef, where("createdBy", "==", userId));
+const remindersfromDB = await getDocs(remindersQuery);
         let remindersList: Record<string, Reminder[]> = {};
         let expandedReminders: Reminder[] = [];
 

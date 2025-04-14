@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, Button, ScrollView } from "react-native";
 import { auth, db } from "../../firebaseConfig"; 
 import { doc, getDoc } from "firebase/firestore";
-import styles from '../styles/styleselderly'; 
+import styles from '../styles/stylesfamily'; 
 import { useRouter } from 'expo-router';
 import { DocumentData } from "firebase/firestore";
 import { Timestamp } from "firebase/firestore";
@@ -58,7 +58,12 @@ const RelativesScreen = () => {
 
   <TouchableOpacity style={styles.button} onPress={() => router.push("/Calendar2")}>
     <Text style={styles.buttonText}>Calendar</Text>
+
   </TouchableOpacity>
+  <TouchableOpacity style={styles.button} onPress={() => router.push("/Connections")}>
+    <Text style={styles.buttonText}>Connections</Text>
+  </TouchableOpacity>
+
 </View>
         </>
       ) : (

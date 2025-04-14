@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { db } from "../firebaseConfig"; 
+import { db, auth } from "../firebaseConfig"; 
 import { collection, addDoc } from "firebase/firestore";
 import { View, Text, TextInput, TouchableOpacity, ScrollView} from "react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -42,13 +42,14 @@ const Reminders = () => {
         CompletedDate.setHours(time.getHours(), time.getMinutes(), 0);
     
         try {
-            const reminderRef = await addDoc(collection(db, "reminders"), {
-                title,
-                datetime: CompletedDate.toISOString(),
-                status: "Pending", 
-                repeat,
-                repeatInterval,
-              });
+          const reminderRef = await addDoc(collection(db, "reminders"), {
+            title,
+            datetime: CompletedDate.toISOString(),
+            status: "Pending",
+            repeat,
+            repeatInterval,
+            createdBy: auth.currentUser?.uid, // 💥 campo clave
+          });
               
 
             Alert.alert("Success", "Reminder created successfully!");

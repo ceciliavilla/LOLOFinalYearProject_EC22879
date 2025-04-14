@@ -72,6 +72,13 @@ const ElderlyScreen = () => {
   <TouchableOpacity style={styles.button} onPress={() => router.push("/Calendar2")}>
     <Text style={styles.buttonText}>Calendar</Text>
   </TouchableOpacity>
+
+  <TouchableOpacity style={styles.button} onPress={() => router.push("/ManageConnections")}>
+    <Text style={styles.buttonText}>Connections</Text>
+  </TouchableOpacity>
+  <TouchableOpacity style={styles.button} onPress={() => router.push("/MyconnectionScreen")}>
+    <Text style={styles.buttonText}>MyConnections</Text>
+  </TouchableOpacity>
 </View>
         </>
       ) : (
