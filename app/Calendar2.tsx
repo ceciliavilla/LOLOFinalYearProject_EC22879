@@ -212,7 +212,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, ActivityIndicator, FlatList, TouchableOpacity, Alert, } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { auth, db } from "../firebaseConfig";
-import { collection, getDocs, query, where, doc, getDoc, updateDoc, } from "firebase/firestore";
+import { collection, getDocs, query, where, doc, getDoc, updateDoc, deleteDoc, } from "firebase/firestore";
 import { useLocalSearchParams } from "expo-router";
 import styles from "./styles/stylescalendar";
 import { setDoc } from "firebase/firestore";
@@ -376,16 +376,23 @@ const Calendar2 = () => {
 
     const markDone = async () => {
       try {
-        
-const instanceRef = doc(db, "reminders", reminderId, "instances", instanceId);
-await setDoc(instanceRef, { status: "done" }, { merge: true });
+        // Mark as done
+        const instanceRef = doc(db, "reminders", reminderId, "instances", instanceId);
+        await setDoc(instanceRef, { status: "done" }, { merge: true });
+    
+        // Mark principal doc as done
+        const mainRef = doc(db, "reminders", reminderId);
+        await updateDoc(mainRef, { status: "done" });
+    
+        // Update Status
         setCompletedInstanceIds((prev) => [...prev, instanceId]);
       } catch (error) {
         console.error("Error marking as done:", error);
         Alert.alert("Error", "Could not mark as done.");
       }
     };
-
+    
+    
     const removeReminder = () => {
       Alert.alert(
         "Delete reminder?",
@@ -393,21 +400,55 @@ await setDoc(instanceRef, { status: "done" }, { merge: true });
         [
           {
             text: "Only this instance",
-            onPress: () =>
-              setReminders((prev) => prev.filter((r) => r.id !== item.id)),
+            onPress: async () => {
+              try {
+                const instanceRef = doc(db, "reminders", reminderId, "instances", instanceId);
+                await deleteDoc(instanceRef); // 🔥 Elimina la instancia concreta de Firestore
+    
+                // Actualiza la vista en pantalla
+                setReminders((prev) =>
+                  prev.filter((r) => r.id !== item.id)
+                );
+                setAllReminders((prev) =>
+                  prev.filter((r) => r.id !== item.id)
+                );
+              } catch (error) {
+                console.error("Error deleting instance:", error);
+                Alert.alert("Error", "Could not delete instance.");
+              }
+            },
           },
           {
             text: "All",
             style: "destructive",
             onPress: async () => {
-              await updateDoc(doc(db, "reminders", reminderId), { deleted: true });
-              setReminders((prev) => prev.filter((r) => !r.id.startsWith(reminderId)));
+              try {
+                // 🔥 Eliminar el documento principal
+                await deleteDoc(doc(db, "reminders", reminderId));
+    
+                // 🔥 Eliminar todas las subinstancias
+                const instancesRef = collection(db, "reminders", reminderId, "instances");
+                const snapshot = await getDocs(instancesRef);
+                const batchDeletes = snapshot.docs.map((docSnap) => deleteDoc(docSnap.ref));
+                await Promise.all(batchDeletes);
+    
+                // Actualiza la vista en pantalla
+                setReminders((prev) =>
+                  prev.filter((r) => !r.id.startsWith(reminderId))
+                );
+                setAllReminders((prev) =>
+                  prev.filter((r) => !r.id.startsWith(reminderId))
+                );
+              } catch (error) {
+                console.error("Error deleting all instances:", error);
+                Alert.alert("Error", "Could not delete all reminders.");
+              }
             },
           },
           { text: "Cancel", style: "cancel" },
         ]
       );
-    };
+    };    
 
     return (
       <View style={[styles.card, isDone && styles.cardDone]}>
@@ -425,7 +466,7 @@ await setDoc(instanceRef, { status: "done" }, { merge: true });
 
             {!isElderly && (
               <TouchableOpacity style={styles.deleteButton} onPress={removeReminder}>
-                <Text style={styles.buttonText}>🗑️ Delete</Text>
+                <Text style={styles.buttonText}>DELETE</Text>
               </TouchableOpacity>
             )}
           </View>

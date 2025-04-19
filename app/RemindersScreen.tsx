@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { db, auth } from "../firebaseConfig"; 
-import { collection, addDoc } from "firebase/firestore";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert} from "react-native";
+import { collection, addDoc, setDoc, doc } from "firebase/firestore";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, } from "react-native";
 import { useRouter } from 'expo-router';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useLocalSearchParams } from 'expo-router';
 import styles from "./styles/stylereminders";
+import * as Notifications from 'expo-notifications';
+
 
 const Reminders = () => {
     const router = useRouter();
@@ -43,7 +45,7 @@ const Reminders = () => {
         completedDate.setHours(time.getHours(), time.getMinutes(), 0);
     
         try {
-           await addDoc(collection(db, "reminders"), {
+          const docRef = await addDoc(collection(db, "reminders"),{
             title,
             datetime: completedDate.toISOString(),
             status: "Pending",
@@ -52,16 +54,76 @@ const Reminders = () => {
             createdBy: auth.currentUser?.uid,
             elderlyId: realElderlyId, 
           });
-              
+          
+          const instancesRef = collection(db, "reminders", docRef.id, "instances");
+          const repeatCount = repeat === "none" ? 1 : 10;
+          const start = new Date(completedDate);
 
-            Alert.alert("Success", "Reminder created successfully!");
-            router.back();
-        } catch (error) {
-            console.error("Error", error);
-        }
-    };
+          for (let i = 0; i < repeatCount; i++) {
+            const instanceDate = new Date(start);
+
+            if (repeat === "daily") instanceDate.setDate(start.getDate() + i * repeatInterval);
+            if (repeat === "weekly") instanceDate.setDate(start.getDate() + i * 7 * repeatInterval);
+            if (repeat === "monthly") instanceDate.setMonth(start.getMonth() + i * repeatInterval);
+
+          const instanceId = `${docRef.id}-${i}`;
+
+          await setDoc(doc(instancesRef, instanceId), {
+          datetime: instanceDate.toISOString(),
+          status: "pending",
+          title,
+        });
+        await scheduleReminderNotification(title, instanceDate);
+      }
+
+
+
+      Alert.alert("Success", "Reminder created successfully!");
+      router.back();
+    } catch (error) {
+      console.error("Error", error);
+    }
+  };
       
-
+    useEffect(() => {
+      const requestPermissions = async () => {
+        const { status } = await Notifications.requestPermissionsAsync();
+        if (status !== 'granted') {
+          alert('You need to enable notifications to receive reminders.');
+        }
+      };
+    
+      requestPermissions();
+    }, []);
+    
+    const scheduleReminderNotification = async (reminderTitle: string, reminderDateInput: Date | string) => {
+      try {
+        const reminderDate = new Date(reminderDateInput); 
+    
+        const secondsUntilReminder = Math.floor((reminderDate.getTime() - Date.now()) / 1000);
+    
+        if (isNaN(secondsUntilReminder) || secondsUntilReminder <= 0) {
+          alert("Please choose a time in the future.");
+          return;
+        }
+    
+        await Notifications.scheduleNotificationAsync({
+          content: {
+            title: "Reminder",
+            body: reminderTitle,
+            sound: true,
+          },
+          trigger: reminderDate, 
+        });
+        
+    
+        console.log("Notification scheduled for:", reminderDate.toISOString());
+      } catch (error) {
+        console.error("Error scheduling notification:", error);
+      }
+    };
+    
+    
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <Text style={styles.title}>Add reminder</Text>

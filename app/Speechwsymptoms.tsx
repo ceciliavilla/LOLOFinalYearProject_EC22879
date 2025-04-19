@@ -4,27 +4,33 @@ import { Audio } from 'expo-av';
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import { firebaseApp } from '../firebaseConfig'; 
 import styles from './styles/stylespeech';
-//import styles from './styles/stylespeech.js/index.js';
 
 const ASSEMBLYAI_API_KEY = "3f48dff71e3b4d239fc526e04a1d9564";
 
+interface Disease {
+  id: string;
+  name: string;
+  symptoms: string[];
+}
+
 export default function SpeechScreen() {
-  const [recording, setRecording] = useState(); 
+  const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [transcript, setTranscript] = useState('');
   const [loading, setLoading] = useState(false);
   const [recommendation, setRecommendation] = useState('');
-  const [diseasesList, setDiseasesList] = useState([]);
+  const [diseasesList, setDiseasesList] = useState<Disease[]>([]);
   const db = getFirestore(firebaseApp);
+  
 
   // Load Diseases 
   useEffect(() => {
     const fetchDiseases = async () => {
       const querySnapshot = await getDocs(collection(db, "diseases_database"));
-      const diseases = [];
+      const diseases: Disease[] = [];
       querySnapshot.forEach((doc) => {
-        diseases.push({ id: doc.id, ...doc.data() });
+        diseases.push({ ...(doc.data() as Disease), id: doc.id });
       });
-      console.log('✅ Diseases loaded:', diseases); // Debug
+      console.log('Diseases loaded:', diseases); 
       setDiseasesList(diseases);
     };
 
@@ -40,26 +46,29 @@ export default function SpeechScreen() {
           allowsRecordingIOS: true,
           playsInSilentModeIOS: true,
         });
-        const { recording } = await Audio.Recording.createAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
+        const { recording } = await Audio.Recording.createAsync(Audio.RecordingOptionsPresets.HIGH_QUALITY);
         setRecording(recording);
       }
-    } catch (err) {
-      console.error('Error starting recording:', err);
+    } catch (error) {
+      console.error('Error starting recording:', error);
     }
   }
 
   // STOP RECORDING AND TRANSCRIBE
   async function stopRecording() {
-    setRecording(undefined);
+    if (!recording) return;
     await recording.stopAndUnloadAsync();
     const uri = recording.getURI();
-    console.log('🎙️ Audio saved at:', uri);
-
-    await uploadAndTranscribeAudio(uri);
+    console.log('Audio saved at:', uri);
+    if (uri){
+      setRecording(null);
+      await processAudio(uri);
+    }
+    
   }
 
   // UPLOAD AUDIO AND REQUEST TRANSCRIPTION FROM ASSEMBLYAI
-  const uploadAndTranscribeAudio = async (audioUri) => {
+  const processAudio = async (audioUri: string) => {
     try {
       setLoading(true);
       const response = await fetch(audioUri);
@@ -93,7 +102,7 @@ export default function SpeechScreen() {
         if (status === 'completed') transcribedText = data.text;
       }
 
-      console.log('📝 Transcript:', transcribedText);
+      console.log('Transcript:', transcribedText);
       setTranscript(transcribedText);
 
       // DETECT SYMPTOMS AND CHECK WHICH ONE IS MORE PROBABLE
@@ -114,8 +123,8 @@ export default function SpeechScreen() {
 
 
   // DETECT SYMPTOMS WITH FIREBASE
-  function detectSymptoms(text) {
-    const detectedSymptoms = [];
+  function detectSymptoms(text : string): string[] {
+    const detectedSymptoms: string[] = [];
     const normalizedText = text.toLowerCase();
 
     diseasesList.forEach(disease => {
@@ -128,36 +137,14 @@ export default function SpeechScreen() {
       });
     });
 
-    console.log('🔍 Detected symptoms:', detectedSymptoms);
+    console.log('Detected symptoms:', detectedSymptoms);
     return [...new Set(detectedSymptoms)];
   }
 
-  // ✅ Encontrar la enfermedad con más síntomas coincidentes
-  /*function findMostProbableDisease(detectedSymptoms) {
-    let bestMatch = null;
+
+  function findMostProbableDiseases(detectedSymptoms : string []): {name : string; matchedSymptoms : string[]} []{
     let maxMatched = 0;
-
-    diseasesList.forEach(disease => {
-      const matchingSymptoms = disease.symptoms.filter(symptom =>
-        detectedSymptoms.includes(symptom)
-      );
-
-      if (matchingSymptoms.length > maxMatched) {
-        maxMatched = matchingSymptoms.length;
-        bestMatch = {
-          name: disease.name,
-          matchedSymptoms: matchingSymptoms
-        };
-      }
-    });
-
-    console.log('💡 Most probable disease:', bestMatch);
-    return bestMatch;
-  }*/
-
-  function findMostProbableDiseases(detectedSymptoms) {
-    let maxMatched = 0;
-    let bestMatches = [];
+    let bestMatches = [] as any[];
 
     diseasesList.forEach(disease => {
         const matchingSymptoms = disease.symptoms.filter(symptom =>
@@ -185,12 +172,12 @@ export default function SpeechScreen() {
     </Text>
   </TouchableOpacity>
 
-  {loading && <Text style={styles.transcript}>Transcribing...</Text>}
+  {loading && <Text style={styles.transcriptText}>Transcribing...</Text>}
 
   {transcript && (
     <>
-      <Text style={styles.transcript}>Transcript: {transcript}</Text>
-      <Text style={styles.recommendation}>Recommendation: {recommendation}</Text>
+      <Text style={styles.transcriptText}>Transcript: {transcript}</Text>
+      <Text style={styles.recommendationText}>Recommendation: {recommendation}</Text>
     </>
   )}
 </View>

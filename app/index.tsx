@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import styles from './styles/styleshome'; // Import styles from a separate document
 import { Image } from 'react-native';
+import "./notificationsConfig"; 
 
 
 export default function HomeScreen() {

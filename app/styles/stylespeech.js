@@ -3,22 +3,29 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'lightgreen', 
+    backgroundColor: '#009D71', 
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
   },
   button: {
-    backgroundColor: '#007BFF', 
+    backgroundColor: 'lightgreen', 
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 10,
   },
   buttonText: {
-    color: '#fff',
+    color: '#009D71',
     fontSize: 16,
     fontWeight: 'bold',
+    shadowColor: 'blue',
+    shadowOpacity: 0.1,
+    borderRadius: 12,
+    width: '48%',
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 4,
+    elevation: 4,
   },
   transcriptContainer: {
     backgroundColor: '#fff',
@@ -66,6 +73,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#555',
   },
+  
 });
 
 export default styles;

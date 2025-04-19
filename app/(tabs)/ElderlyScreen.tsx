@@ -17,6 +17,7 @@ const ElderlyScreen = () => {
   const router = useRouter();
   const [userData, setUserData] = useState<DocumentData | null>(null);
 
+
     useFocusEffect(
       useCallback(() => {
         const fetchUserData = async () => {
@@ -74,7 +75,7 @@ const ElderlyScreen = () => {
   </TouchableOpacity>
 
   <TouchableOpacity style={styles.connectionButton} onPress={() => router.push("/ManageConnections")}>
-    <Text style={styles.connectionButtonText}>Connections</Text>
+    <Text style={styles.connectionButtonText}>Pending Connections</Text>
   </TouchableOpacity>
   <TouchableOpacity style={styles.myConnectionButton} onPress={() => router.push("/MyconnectionScreen")}>
     <Text style={styles.myConnectionButtonText}>MyConnections</Text>

@@ -28,6 +28,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     marginTop: 10,
   },
+  disconnectButton: {
+    backgroundColor: '#e63946',
+    borderRadius: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    marginTop: 10,
+    position: 'absolute',
+  top: 10,
+  right: 10,
+  zIndex: 1,
+  },
+  disconnectText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '600',
+  },
   buttonText: {
     color: '#034d36',
     fontSize: 14,
