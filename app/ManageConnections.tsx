@@ -38,8 +38,9 @@ export default function ManageConnectionsScreen() {
           return {
             id: docSnap.id,
             ...data,
-            fromUserEmail: fromUserData.email || 'Unknown',
-            fromUserName: fromUserData.name || 'Unknown',
+            fromUserEmail: fromUserData.email || '',
+            fromUserName: fromUserData.name || '',
+            fromUserlastName: fromUserData.lastName || '',
           };
         })
       );
@@ -68,7 +69,7 @@ export default function ManageConnectionsScreen() {
       {requests.map((req) => (
         <View key={req.id} style={styles.requestBox}>
           <Text style={styles.requestText}>
-            From: {req.fromUserName} ({req.fromUserEmail})
+            From: {req.fromUserName} {req.fromUserlastName} ({req.fromUserEmail})
           </Text>
           <TouchableOpacity
             style={styles.acceptButton}

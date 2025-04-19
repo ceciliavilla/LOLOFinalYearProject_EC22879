@@ -98,6 +98,16 @@ export default function TabsLayout() {
           ),
         }}
       />
+        <Tabs.Screen
+        name="HealthcareScreen"
+        options={{
+          href: userType === 'Healthcare' ? undefined : null,
+          title: 'HEALTHCARE',
+          tabBarIcon: ({ color, focused }: { color: string; focused: boolean }) => (
+            <TabIcon icon={icons.lolo} color={color} name=" " focused={focused} />
+          ),
+        }}
+      />
 
       <Tabs.Screen
         name="ProfileScreen"

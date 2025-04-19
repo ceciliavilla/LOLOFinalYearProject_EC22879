@@ -70,16 +70,23 @@ export default function ProfileScreen() {
 
         const docRef = doc(db, 'users', user.uid);
 
-        if (email !== user.email) {
-          await updateEmail(user, email);
-        }
-
-        await updateDoc(docRef, {
+        const updatedFields: any = {
           email,
           name,
           lastName,
-          birthDate,
-        });
+        };
+  
+    
+        if (userType === 'Elderly' && birthDate && !isNaN(birthDate.getTime?.())) {
+          updatedFields.birthDate = birthDate;
+        }
+  
+
+        if (email !== user.email) {
+          await updateEmail(user, email);
+        }
+  
+        await updateDoc(docRef, updatedFields);
 
         if (newPassword.length > 0) {
           if (newPassword !== confirmPassword) {

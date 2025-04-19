@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import { View, Text, ActivityIndicator, FlatList } from "react-native";
-import { db } from "../firebaseConfig"; 
+import { db } from "../../firebaseConfig"; 
 import { collection, getDocs } from "firebase/firestore";
 import { Calendar } from "react-native-calendars";
-import styles from "./styles/stylescalendar"; 
+import styles from "../styles/stylescalendar"; 
 
 const CalendarScreen = () => {
   const [markDates, setmarkDates] = useState({});

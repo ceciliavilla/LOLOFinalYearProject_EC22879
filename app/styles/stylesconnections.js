@@ -28,8 +28,21 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
   },
+  buttonPending: {
+    marginTop: 10,
+    backgroundColor: 'white',         
+    borderColor: 'blue',        
+    borderWidth: 2,                   
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center'
+  },
   buttonText: {
     color: '#fff',
+    fontWeight: 'bold',
+  },
+  buttonPendingText: {
+    color: 'blue',
     fontWeight: 'bold',
   },
 });

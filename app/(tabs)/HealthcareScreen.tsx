@@ -71,7 +71,7 @@ const RelativesScreen = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>
-        Welcome, {userData ? userData.name || "User" : "Loading"}
+        Welcome to healthcarescreen, {userData ? userData.name || "User" : "Loading"}
       </Text>
 
       {connectedElderly.length > 0 ? (

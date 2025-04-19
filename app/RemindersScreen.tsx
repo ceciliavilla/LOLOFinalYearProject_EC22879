@@ -1,16 +1,14 @@
 import React, { useState } from "react";
 import { db, auth } from "../firebaseConfig"; 
 import { collection, addDoc } from "firebase/firestore";
-import { View, Text, TextInput, TouchableOpacity, ScrollView} from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert} from "react-native";
+import { useRouter } from 'expo-router';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { useLocalSearchParams } from 'expo-router';
 import styles from "./styles/stylereminders";
-import { Alert } from "react-native";
-
-
 
 const Reminders = () => {
-    const navigation = useNavigation();
+    const router = useRouter();
     const [title, setTitle] = useState("");
     const [date, setDate] = useState<Date | null>(null);
     const [time, setTime] = useState<Date | null>(null);
@@ -18,6 +16,8 @@ const Reminders = () => {
     const [ChooseTime, setChooseTime] = useState(false);
     const [repeat, setRepeat] = useState("none");
     const [repeatInterval, setRepeatInterval] = useState<number>(1);
+    const { elderlyId } = useLocalSearchParams();
+    const realElderlyId = elderlyId || auth.currentUser?.uid;
   
     // Choose Date
     const DateElection = (selectedDate: Date) => {
@@ -33,27 +33,29 @@ const Reminders = () => {
 
     // Save to Firestore 
     const saveReminder = async () => {
-        if (!title || !date || !time) {
+        const user = auth.currentUser;
+        if (!title || !date || !time|| !auth.currentUser) {
             alert("Fill all the sections");
             return;
         }
     
-        const CompletedDate = new Date(date);
-        CompletedDate.setHours(time.getHours(), time.getMinutes(), 0);
+        const completedDate = new Date(date);
+        completedDate.setHours(time.getHours(), time.getMinutes(), 0);
     
         try {
-          const reminderRef = await addDoc(collection(db, "reminders"), {
+           await addDoc(collection(db, "reminders"), {
             title,
-            datetime: CompletedDate.toISOString(),
+            datetime: completedDate.toISOString(),
             status: "Pending",
             repeat,
             repeatInterval,
-            createdBy: auth.currentUser?.uid, // 💥 campo clave
+            createdBy: auth.currentUser?.uid,
+            elderlyId: realElderlyId, 
           });
               
 
             Alert.alert("Success", "Reminder created successfully!");
-            navigation.goBack();
+            router.back();
         } catch (error) {
             console.error("Error", error);
         }
@@ -72,16 +74,16 @@ const Reminders = () => {
             />
 
             <TouchableOpacity onPress={() => setChooseDate(true)} style={styles.button}>
-                <Text style={styles.buttonText}>{date ? ` ${date.toDateString()}` : "Choose Date"}</Text>
+                <Text style={styles.buttonText}>{date ? date.toDateString() : "Choose Date"}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => setChooseTime(true)} style={styles.button}>
-                <Text style={styles.buttonText}>{time ? ` ${time.toLocaleTimeString()}` : "Choose Time"}</Text>
+                <Text style={styles.buttonText}>{time ? time.toLocaleTimeString() : "Choose Time"}</Text>
             </TouchableOpacity>
 
-            <Text style={{ marginTop: 20, fontWeight: "bold" }}>Repeat</Text>
+            <Text style={styles.repeatLabel}>Repeat</Text>
 
-<View style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: 15 }}>
+<View style={styles.repeatContainer}>
   {[
     { label: "Don't repeat", value: "none" },
     { label: "Daily", value: "daily" },
@@ -91,66 +93,46 @@ const Reminders = () => {
     <TouchableOpacity
       key={item.value}
       onPress={() => setRepeat(item.value)}
-      style={{
-        backgroundColor: repeat === item.value ? "#007BFF" : "#eee",
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        borderRadius: 5,
-        marginRight: 10,
-        marginBottom: 10,
-        marginTop:20,
-      }}
+      style={[
+        styles.repeatOption,
+        repeat === item.value && styles.selectedRepeatOption,
+      ]}
     >
-      <Text style={{ color: repeat === item.value ? "#fff" : "#000" }}>{item.label}</Text>
+       <Text style={[
+              styles.repeatOptionText,
+              repeat === item.value && styles.selectedRepeatOptionText
+            ]}>
+              {item.label}
+            </Text>
     </TouchableOpacity>
   ))}
 </View>
 
 {repeat !== "none" && (
   <>
-    <Text style={{ marginTop: 20, fontWeight: "bold" }}>
-      Repeat every {repeatInterval}{" "}
-      {repeat === "daily"
-        ? "day(s)"
-        : repeat === "weekly"
-        ? "week(s)"
-        : repeat === "monthly"
-        ? "month(s)"
-        : ""}
+    <Text style={styles.repeatLabel}>
+      Repeat every {repeatInterval}{" "} {repeat === "daily" ? "day(s)" : repeat === "weekly" ? "week(s)": repeat === "monthly" ? "month(s)" : ""}
     </Text>
 
-    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 15 }}>
+    <View style={styles.intervalContainer}>
       <TouchableOpacity
-        style={{
-          backgroundColor: "#ddd",
-          padding: 10,
-          borderRadius: 5,
-          marginRight: 10,
-        }}
+        style={styles.intervalButton}
         onPress={() => setRepeatInterval(Math.max(1, repeatInterval - 1))}
       >
-        <Text style={{ fontSize: 18 }}>-</Text>
+        <Text style={styles.intervalButtonText}>-</Text>
       </TouchableOpacity>
 
-      <Text style={{ fontSize: 16 }}>{repeatInterval}</Text>
+      <Text style={styles.intervalValue}>{repeatInterval}</Text>
 
       <TouchableOpacity
-        style={{
-          backgroundColor: "#ddd",
-          padding: 10,
-          borderRadius: 5,
-          marginLeft: 10,
-        }}
+        style={styles.intervalButton}
         onPress={() => setRepeatInterval(repeatInterval + 1)}
       >
-        <Text style={{ fontSize: 18 }}>+</Text>
+        <Text style={styles.intervalButtonText}>+</Text>
       </TouchableOpacity>
     </View>
   </>
 )}
-
-
-
             <TouchableOpacity onPress={saveReminder} style={styles.saveButton}>
                 <Text style={styles.buttonText}>Save</Text>
             </TouchableOpacity>

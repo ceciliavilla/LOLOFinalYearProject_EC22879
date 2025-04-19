@@ -1,53 +1,3 @@
-/*import { StyleSheet } from 'react-native';
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'lightblue',
-    paddingHorizontal: 20,
-    paddingTop: 90, 
-    marginTop: 0,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#009D71',
-    textAlign: 'left',
-    alignSelf: 'flex-start', 
-    marginBottom: 10,
-  },
-  userInfoContainer: {
-    flexDirection: "row", 
-    justifyContent: "center", 
-    alignItems: "center", 
-    marginBottom: 20,
-  },
-  info: {
-    fontSize: 18,
-    color: 'black',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    marginHorizontal: 8, 
-  },
-  buttonText: {
-    color: 'lightgreen',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  button: {
-    backgroundColor: '#009D71',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 10,
-    marginVertical: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  
-});
-
-export default styles;*/
 import { StyleSheet, Platform, StatusBar } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -84,6 +34,53 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     letterSpacing: 0.5,
   },
+  connectionText: {
+    fontSize: 16,
+    color: '#0a4d5e',
+    fontWeight: '500',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  card: {
+    backgroundColor: '#419a78',
+    borderRadius: 16,
+    padding: 16,
+    marginRight: 12,
+    minWidth: 180,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 5,
+    elevation: 8,
+  },
+  cardText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  innerButton: {
+    backgroundColor: '#b2f5dc',
+    borderRadius: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    marginBottom: 6,
+  },
+  innerButtonAlt: {
+    backgroundColor: '#7ccfbf',
+    borderRadius: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+  },
+  innerButtonText: {
+    color: '#034d36',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  
+  
 });
 
 export default styles;

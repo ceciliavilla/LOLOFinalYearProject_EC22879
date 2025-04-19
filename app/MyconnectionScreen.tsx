@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { auth, db } from '../firebaseConfig';
-import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
+import styles from './styles/stylesmyconnections';
+
 
 export default function MyConnectionsScreen() {
   const [connections, setConnections] = useState<any[]>([]);
@@ -12,7 +14,6 @@ export default function MyConnectionsScreen() {
       const currentUserId = auth.currentUser?.uid;
       if (!currentUserId) return;
 
-      // Obtener conexiones donde el usuario elderly es el receptor
       const q = query(
         collection(db, 'connectionRequests'),
         where('toUserId', '==', currentUserId),
@@ -28,8 +29,9 @@ export default function MyConnectionsScreen() {
         if (userSnap.exists()) {
           const userData = userSnap.data();
           connectedUsers.push({
-            id: userSnap.id,
-            name: userData.name || 'Unknown',
+            id: requestDoc.id, // ID del documento de la solicitud
+            name: userData.name || 'N/A',
+            lastName: userData.lastName || '',
             email: userData.email || '',
             userType: userData.userType || '',
           });
@@ -42,6 +44,34 @@ export default function MyConnectionsScreen() {
 
     fetchConnections();
   }, []);
+
+  const confirmRemove = (requestId: string) => {
+    Alert.alert(
+      'Are you sure?',
+      'This will remove the connection.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Remove',
+          style: 'destructive',
+          onPress: () => handleRemove(requestId),
+        },
+      ]
+    );
+  };
+
+  const handleRemove = async (requestId: string) => {
+    try {
+      await updateDoc(doc(db, 'connectionRequests', requestId), {
+        status: 'removed',
+      });
+      setConnections(prev => prev.filter(conn => conn.id !== requestId));
+      Alert.alert('Connection removed.');
+    } catch (error) {
+      console.error('Error removing connection:', error);
+      Alert.alert('Error', 'Could not remove connection.');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -57,9 +87,15 @@ export default function MyConnectionsScreen() {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <View style={styles.card}>
-              <Text style={styles.name}>{item.name}</Text>
+              <Text style={styles.name}>{item.name} {item.lastName}</Text>
               <Text style={styles.email}>{item.email}</Text>
               <Text style={styles.role}>Role: {item.userType}</Text>
+              <TouchableOpacity
+                onPress={() => confirmRemove(item.id)}
+                style={styles.removeButton}
+              >
+                <Text style={styles.removeButtonText}>Remove</Text>
+              </TouchableOpacity>
             </View>
           )}
         />
@@ -68,43 +104,3 @@ export default function MyConnectionsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#b2f5dc', // verde clarito para elderly
-    padding: 20,
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    color: '#00684a',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  subtitle: {
-    textAlign: 'center',
-    fontSize: 16,
-    color: '#444',
-  },
-  card: {
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 12,
-    elevation: 2,
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#222',
-  },
-  email: {
-    fontSize: 16,
-    color: '#555',
-  },
-  role: {
-    fontSize: 14,
-    color: '#777',
-    marginTop: 4,
-  },
-});
