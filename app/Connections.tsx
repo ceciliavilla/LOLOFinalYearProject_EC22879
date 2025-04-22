@@ -46,7 +46,7 @@ export default function SendConnectionRequest() {
       const existingRequestQuery = query(
         collection(db, 'connectionRequests'),
         where('fromUserId', '==', currentUserId),
-        where('toUserId', '==', elderlyId)
+        where('toUserId', '==', elderlyId),
       );
   
       const existingRequestSnapshot = await getDocs(existingRequestQuery);
@@ -57,12 +57,10 @@ export default function SendConnectionRequest() {
           Alert.alert('Request Already Sent', 'You already sent a connection request. Wait for it to be accepted.');
         } else if (status === 'accepted') {
           Alert.alert('Already Connected', 'You are already connected to this user.');
-        } else {
-          Alert.alert('Request Exists', `You already have a request with status: ${status}`);
-        }
         setLoading(false);
         return;
       }
+    }
   
       const requestId = `${currentUserId}_${elderlyId}`;
   

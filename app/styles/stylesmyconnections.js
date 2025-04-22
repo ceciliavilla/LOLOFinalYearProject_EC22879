@@ -57,6 +57,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 15,
   },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#00684a',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  
 });
 
 export default styles;

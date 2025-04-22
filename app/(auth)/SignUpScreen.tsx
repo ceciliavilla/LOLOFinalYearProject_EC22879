@@ -17,8 +17,11 @@ export default function SignUpScreen() {
   // Aditional fields for elderly
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState(''); 
-  const [birthDate, setBirthDate] = useState<Date | null>(null); // Set initial value to null
+  const [birthDate, setBirthDate] = useState<Date | null>(null); 
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  // Additional for healthcare
+  const [speciality, setSpeciality] = useState('');
 
   let userData: {
     email: string | null;
@@ -27,6 +30,7 @@ export default function SignUpScreen() {
     name?: string;    
     lastName?: string;  
     birthDate?: string; // Added for Elderly
+    speciality?: string; // Addeed for Healthcare
   } = {
     email: email,
     userType: userType,
@@ -44,13 +48,18 @@ export default function SignUpScreen() {
       return;
     }
 
-    // Check if elderly users have filled additional fields
+    
     if (!name.trim() || !lastName.trim()) {
       Alert.alert("Error", "Please fill in all fields.");
       return;
     }
+    //Check if Additional fields have been filled
     if (userType === "Elderly" && !birthDate) {
       Alert.alert("Error", "Please select your birth date.");
+      return;
+    }
+    if (userType === "Healthcare" && !speciality) {
+      Alert.alert("Error", "Please select your speciality.");
       return;
     }
 
@@ -68,6 +77,9 @@ export default function SignUpScreen() {
       if (userType === "Elderly") {
         userData.birthDate = (birthDate ?? new Date()).toISOString().split('T')[0];
       }
+      if (userType === "Healthcare") {
+  userData.speciality = speciality.trim();
+}
 
       //Save user data in Firestore
       await setDoc(doc(db, "users", user.uid), userData);
@@ -112,7 +124,7 @@ export default function SignUpScreen() {
         onChangeText={setConfirmPassword}
         secureTextEntry
       />
-      {/* Name input */}
+      {/* Name */}
       <TextInput
             style={styles.input}
             placeholder="Name"
@@ -138,7 +150,6 @@ export default function SignUpScreen() {
             <Text style={styles.birthDateText}> {birthDate ? birthDate.toDateString() : "Select Birth Date"} </Text>
           </TouchableOpacity>
 
-         {/* Show Datepicker */}
         {showDatePicker && (
           <DateTimePicker
           value={birthDate || new Date()}  
@@ -152,9 +163,17 @@ export default function SignUpScreen() {
           style={{ backgroundColor: 'transparent' }}
           />
         )}
-
+      
         </>
       )}
+      {userType === "Healthcare" && (
+
+<TextInput
+style={styles.input}
+placeholder="Speciality"
+value={speciality}
+onChangeText={setSpeciality}
+/>)}
 
       <Text style={styles.label}>Select User Type:</Text>
       <View style={styles.userTypeContainer}>

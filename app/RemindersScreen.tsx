@@ -44,6 +44,10 @@ const Reminders = () => {
         const completedDate = new Date(date);
         completedDate.setHours(time.getHours(), time.getMinutes(), 0);
     
+        if (completedDate.getTime() <= Date.now()) {
+          Alert.alert("Invalid Date", "Please choose a future date and time.");
+          return;
+        }
         try {
           const docRef = await addDoc(collection(db, "reminders"),{
             title,

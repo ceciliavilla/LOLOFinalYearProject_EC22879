@@ -1,67 +1,19 @@
-/*import { StyleSheet } from 'react-native';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'lightgreen',
-    paddingHorizontal: 20,
-    paddingTop: 90, 
-    marginTop: 0,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#009D71',
-    textAlign: 'left',
-    alignSelf: 'flex-start', 
-    marginBottom: 10,
-  },
-  userInfoContainer: {
-    flexDirection: "row", 
-    justifyContent: "center", 
-    alignItems: "center", 
-    marginBottom: 20,
-  },
-  info: {
-    fontSize: 18,
-    color: 'black',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    marginHorizontal: 8, 
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  button: {
-    backgroundColor: '#007BFF',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 10,
-    marginVertical: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
 
-  
-});
-
-export default styles;*/
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#b2f5dc', // verde clarito (Elderly)
+    backgroundColor: '#b2f5dc',
     paddingHorizontal: 20,
     paddingTop: 70,
   },
   title: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: 'bold',
-    color: '#00684a', // verde oscuro para contraste
-    textAlign: 'left',
+    color: '#004d3c',
+    textAlign: 'center',
     marginBottom: 12,
   },
   userInfoContainer: {
@@ -69,66 +21,111 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexWrap: 'wrap',
-    marginBottom: 24,
+    marginBottom: 4,
   },
   info: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '500',
     color: '#2d3748',
     marginHorizontal: 8,
   },
   button: {
     backgroundColor: '#009D71',
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    marginVertical: 8,
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 16,
+    marginVertical: 10,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 3,
   },
   buttonText: {
     color: '#ffffff',
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: '600',
   },
   connectionButton: {
     backgroundColor: '#009D71',
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    marginVertical: 8,
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 16,
+    marginVertical: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 2,
+    elevation: 3,
   },
   connectionButtonText: {
     color: '#ffffff',
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: '600',
   },
   myConnectionButton: {
     backgroundColor: '#ffffff',
     borderColor: '#009D71',
     borderWidth: 2,
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    marginVertical: 8,
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 16,
+    marginVertical: 10,
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 1,
   },
   myConnectionButtonText: {
     color: '#009D71',
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: '600',
   },
-
+  summaryContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 20,
+    gap: 20,
+  },
+  summaryCard: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.12,
+    shadowRadius: 3,
+    alignItems: 'center',
+    justifyContent: 'center',
+  
+  },  
+  summaryText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#00684a',
+    textAlign: 'center',
+  },
+  Emergencybutton: {
+    backgroundColor: '#ff4d4d',
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    alignSelf: 'center',
+    marginBottom: 60,
+  },
+  EmergencyButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 22,
+  },
+ 
 });
-
 export default styles;

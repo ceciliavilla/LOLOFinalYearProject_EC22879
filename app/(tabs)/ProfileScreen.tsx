@@ -19,6 +19,7 @@ export default function ProfileScreen() {
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
   const [birthDate, setBirthDate] = useState<Date | null>(null);
+  const [speciality, setSpeciality] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [loading, setLoading] = useState(true);
@@ -38,6 +39,7 @@ export default function ProfileScreen() {
             setName(data.name || '');
             setLastName(data.lastName || '');
             setUserType(data.userType || '');
+            setSpeciality(data.speciality || '');
             setBirthDate(
               data.birthDate instanceof Timestamp ? data.birthDate.toDate() : new Date(data.birthDate));
           }
@@ -80,6 +82,9 @@ export default function ProfileScreen() {
         if (userType === 'Elderly' && birthDate && !isNaN(birthDate.getTime?.())) {
           updatedFields.birthDate = birthDate;
         }
+        if (userType === 'Healthcare' && speciality) {
+          updatedFields.speciality = speciality;
+        }        
   
 
         if (email !== user.email) {
@@ -183,6 +188,18 @@ export default function ProfileScreen() {
     )}
   </>
 )}
+{userType === 'Healthcare' && (
+  <>
+    <Text style={styles.label}>Speciality</Text>
+    <TextInput
+      style={styles.input}
+      value={speciality}
+      onChangeText={setSpeciality}
+      placeholder=""
+    />
+  </>
+)}
+
       <Text style={styles.label}>Current Password</Text>
       <TextInput
         style={styles.input}

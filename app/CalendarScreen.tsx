@@ -234,7 +234,7 @@ type MarkedDate = {
   selectedColor?: string;
 };
 
-const Calendar2 = () => {
+const CalendarScreen = () => {
   const [markDates, setMarkDates] = useState<Record<string, MarkedDate>>({});
   const [loading, setLoading] = useState(true);
   const [reminders, setReminders] = useState<Reminder[]>([]);
@@ -247,6 +247,7 @@ const Calendar2 = () => {
   const { elderlyId } = useLocalSearchParams();
   const realElderlyId = Array.isArray(elderlyId) ? elderlyId[0] : elderlyId || auth.currentUser?.uid;
   const isElderly = userData?.userType === "Elderly";
+  const isFamily = userData?.userType === "Family";
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -403,9 +404,9 @@ const Calendar2 = () => {
             onPress: async () => {
               try {
                 const instanceRef = doc(db, "reminders", reminderId, "instances", instanceId);
-                await deleteDoc(instanceRef); // 🔥 Elimina la instancia concreta de Firestore
+                await deleteDoc(instanceRef); // Delete instance selected
     
-                // Actualiza la vista en pantalla
+                // Update Screen
                 setReminders((prev) =>
                   prev.filter((r) => r.id !== item.id)
                 );
@@ -423,16 +424,16 @@ const Calendar2 = () => {
             style: "destructive",
             onPress: async () => {
               try {
-                // 🔥 Eliminar el documento principal
+                // Delete main document
                 await deleteDoc(doc(db, "reminders", reminderId));
     
-                // 🔥 Eliminar todas las subinstancias
+                
                 const instancesRef = collection(db, "reminders", reminderId, "instances");
                 const snapshot = await getDocs(instancesRef);
                 const batchDeletes = snapshot.docs.map((docSnap) => deleteDoc(docSnap.ref));
                 await Promise.all(batchDeletes);
     
-                // Actualiza la vista en pantalla
+                // Update the Screen
                 setReminders((prev) =>
                   prev.filter((r) => !r.id.startsWith(reminderId))
                 );
@@ -458,17 +459,16 @@ const Calendar2 = () => {
         </Text>
         <Text style={styles.cardTime}>{time}</Text>
 
-        {!isDone && (
+        {!isDone && isElderly && (
           <View style={styles.buttonRow}>
             <TouchableOpacity style={styles.doneButton} onPress={markDone}>
               <Text style={styles.buttonText}>DONE</Text>
             </TouchableOpacity>
 
-            {!isElderly && (
               <TouchableOpacity style={styles.deleteButton} onPress={removeReminder}>
                 <Text style={styles.buttonText}>DELETE</Text>
               </TouchableOpacity>
-            )}
+            
           </View>
         )}
       </View>
@@ -520,4 +520,4 @@ const Calendar2 = () => {
   );
 };
 
-export default Calendar2;
+export default CalendarScreen;
