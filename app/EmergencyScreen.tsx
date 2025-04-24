@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Linking, Alert} from 'react-native';
 import styles from './styles/stylesemergency'; 
+
+const EMERGENCY_NUMBER = '+44 07709263463';
 
 
 const EmergencyScreen = () => {
@@ -11,7 +13,7 @@ const EmergencyScreen = () => {
     setCountdown(timeLeft);
 
     if (timeLeft <= 0) {
-      setCalling(true);
+      handleCall();
       return;
     }
 
@@ -19,6 +21,25 @@ const EmergencyScreen = () => {
       startCountdown(timeLeft - 1);
     }, 1000);
   };
+
+  const handleCall = () => {
+    setCalling(true);
+
+    Alert.alert(
+      'Emergency Call',
+      `Do you want to call ${EMERGENCY_NUMBER}?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Call',
+          onPress: () => {
+            Linking.openURL(`tel:${EMERGENCY_NUMBER}`);
+          },
+        },
+      ]
+    );
+  };
+
 
   useEffect(() => {
     startCountdown(10);
@@ -29,7 +50,7 @@ const EmergencyScreen = () => {
       {!calling ? (
         <Text style={styles.countdown}>Calling in {countdown} seconds...</Text>
       ) : (
-        <Text style={styles.calling}>CALLING 911 </Text>
+        <Text style={styles.calling}>Opening call screen...</Text>
       )}
     </View>
   );

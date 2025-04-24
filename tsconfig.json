@@ -17,5 +17,5 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-, "app/styles/stylespeech.js", "app/styles/stylesmyconnections.js", "app/styles/stylesmanageconnections.js", "app/styles/styleslayout.js", "app/styles/stylesintro.js", "app/styles/stylesignup.js", "app/styles/stylesignin.js", "app/styles/styleshome.js", "app/styles/stylesfindhealthcare.js", "app/styles/stylesfamily.js", "app/styles/styleselderly.js", "app/styles/stylescalendar.js", "app/styles/stylesconnections.js", "app/styles/stylereminders.js", "app/styles/styleprofile.js", "app/styles/stylecarro.js"  ]
+, "app/styles/stylespeech.js", "app/styles/stylesmyconnections.js", "app/styles/stylesmanageconnections.js", "app/styles/styleslayout.js", "app/styles/stylesintro.js", "app/styles/stylesignup.js", "app/styles/stylesignin.js", "app/styles/styleshome.js", "app/styles/stylesfindhealthcare.js", "app/styles/stylesfamily.js", "app/styles/styleselderly.js", "app/styles/stylescalendar.js", "app/styles/stylesconnections.js", "app/styles/stylereminders.js", "app/styles/styleprofile.js", "app/styles/stylecarro.js", "app/ClassifiedSymptoms.csv"  ]
 }

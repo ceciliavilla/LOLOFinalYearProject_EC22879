@@ -138,7 +138,7 @@ const ElderlyScreen = () => {
   </TouchableOpacity>
 </View>
 <View>
-<TouchableOpacity style={styles.Emergencybutton} onPress={() => router.push("/emergencyScreen")}>
+<TouchableOpacity style={styles.Emergencybutton} onPress={() => router.push("/EmergencyScreen")}>
     <Text style={styles.EmergencyButtonText}>SOS</Text>
   </TouchableOpacity>
 </View>

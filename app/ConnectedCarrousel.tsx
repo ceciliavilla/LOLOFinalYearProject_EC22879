@@ -140,9 +140,11 @@ const ConnectedUserCarousel = ({
   data,
   onPrimaryAction,
   onSecondaryAction,
+  onTertiaryAction,
   onDisconnect,
   primaryLabel = "Primary",
   secondaryLabel = "Secondary",
+  tertiaryLabel = "Tertiary",
   showDisconnect = true,
 }) => {
   const scrollX = useRef(new Animated.Value(0)).current;
@@ -182,6 +184,15 @@ const ConnectedUserCarousel = ({
             <Text style={styles.buttonText}>{secondaryLabel}</Text>
           </TouchableOpacity>
         )}
+        {onTertiaryAction && (
+        <TouchableOpacity
+          style={styles.button}
+        onPress={() => onTertiaryAction(item.id)}
+          >
+         <Text style={styles.buttonText}>{tertiaryLabel}</Text>
+        </TouchableOpacity>
+)}
+
 
         {showDisconnect && (
           <TouchableOpacity

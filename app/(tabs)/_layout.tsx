@@ -133,6 +133,7 @@ import styleslayout from '../styles/styleslayout'; // asegúrate de que la ruta 
 const icons = {
   lolo: require('../../assets/icons/Home4.png'),
   settings: require('../../assets/icons/Settings2.png'),
+  chat: require('../../assets/icons/ChatLogo.png'),
 };
 
 const TabIcon = ({
@@ -229,6 +230,15 @@ export default function TabsLayout() {
           ),
         }}
       />
+        <Tabs.Screen
+        name="CheckPosts"
+        options={{
+          title: 'Posts',
+          tabBarIcon: ({ color, focused }: { color: string; focused: boolean }) => (
+            <TabIcon icon={icons.chat} color={color} name="Posts" focused={focused} />
+          ),
+        }}
+      />
 
       <Tabs.Screen
         name="ProfileScreen"
@@ -239,6 +249,8 @@ export default function TabsLayout() {
           ),
         }}
       />
+      
     </Tabs>
+    
   );
 }

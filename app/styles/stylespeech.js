@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   transcriptContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: 'grey',
     padding: 15,
     borderRadius: 10,
     marginTop: 20,
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
   transcriptText: {
     fontSize: 16,
-    color: '#333',
+    color: 'white',
     fontWeight: '500',
   },
   symptomsContainer: {
@@ -53,11 +53,11 @@ const styles = StyleSheet.create({
   },
   symptomsText: {
     fontSize: 16,
-    color: '#007BFF',
+    color: 'white',
     fontWeight: 'bold',
   },
   recommendationContainer: {
-    backgroundColor: '#FFF3CD', 
+    backgroundColor: 'lightblue', 
     padding: 15,
     borderRadius: 10,
     marginTop: 15,
@@ -65,14 +65,24 @@ const styles = StyleSheet.create({
   },
   recommendationText: {
     fontSize: 16,
-    color: '#856404',
+    color: 'blue',
     fontWeight: 'bold',
   },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
-    color: '#555',
+    color: 'white',
   },
+  symptomCard: {
+    padding: 12,
+    borderRadius: 10,
+    marginTop: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 4,
+  }  
   
 });
 

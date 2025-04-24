@@ -127,14 +127,23 @@ const HealthcareScreen = () => {
           <>
             <Text style={styles.connectionText}>Connected Elderly Users:</Text>
             <ConnectedUserCarousel
-              data={connectedElderly}
-              onPrimaryAction={(id: any) =>
-                router.push({ pathname: "/CalendarScreen", params: { elderlyId: id } })
-              }
-              primaryLabel="Calendar"
-              showDisconnect={true}
-              onDisconnect={disconnectElderly}
-            />
+  data={connectedElderly}
+  onPrimaryAction={(id: any) =>
+    router.push({ pathname: "/CalendarScreen", params: { elderlyId: id } })
+  }
+  primaryLabel="Calendar"
+  onSecondaryAction={(id: any) =>
+    router.push({ pathname: "/TrackedSymptoms", params: { elderlyId: id } })
+  }
+  secondaryLabel="Symptoms"
+  showDisconnect={true}
+  onDisconnect={disconnectElderly}
+
+onTertiaryAction={(id: any) =>
+  router.push({ pathname: "/MedicalHistory", params: { elderlyId: id } })
+}
+tertiaryLabel="Medical History"
+/>
           </>
         ) : (
           <Text style={styles.connectionText}>
@@ -148,6 +157,7 @@ const HealthcareScreen = () => {
           📩 {pendingCount} pending connection{pendingCount !== 1 ? 's' : ''}
         </Text>
       </TouchableOpacity>
+      
     </>
   );
 };
