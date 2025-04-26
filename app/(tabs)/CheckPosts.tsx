@@ -4,9 +4,10 @@ import { getFirestore, collection, getDocs } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { firebaseApp } from "../../firebaseConfig";
 import moment from "moment";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 
 const CheckPosts = () => {
+  const { elderlyId } = useLocalSearchParams();
   const [posts, setPosts] = useState<any[]>([]);
   const db = getFirestore(firebaseApp);
   const auth = getAuth();
@@ -15,10 +16,17 @@ const CheckPosts = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      if (!user) return;
+      if (!elderlyId) {
+        return (
+          <View style={styles.container}>
+            <Text style={styles.noData}>No user selected.</Text>
+          </View>
+        );
+      }
+      
 
       try {
-        const snapshot = await getDocs(collection(db, `users/${user.uid}/healthcare_posts`));
+        const snapshot = await getDocs(collection(db, `users/${elderlyId}/healthcare_posts`));
         const results = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data()
@@ -30,13 +38,13 @@ const CheckPosts = () => {
     };
 
     fetchPosts();
-  }, [user]);
+  }, [elderlyId]);
+  
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>📩 Messages from your Healthcare Provider</Text>
+      <Text style={styles.title}>Messages from your Healthcare Provider  </Text>
 
-      {/* ✅ Botón general para pedir cita */}
       <TouchableOpacity
         style={styles.generalAppointmentButton}
         onPress={() => router.push("/BookAppointment")}

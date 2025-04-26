@@ -64,7 +64,7 @@ export default CreateHealthcarePost;
 
 const styles = StyleSheet.create({
     container: {
-    paddingTop: 90,
+    Top: 90,
       flex: 1,
       backgroundColor: "#e0f7f7",
       padding: 20,

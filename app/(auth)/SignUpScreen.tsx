@@ -101,6 +101,7 @@ export default function SignUpScreen() {
       <TextInput
         style={styles.input}
         placeholder="Email"
+        testID="emailInput"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
@@ -111,23 +112,32 @@ export default function SignUpScreen() {
       <TextInput
         style={styles.input}
         placeholder="Password"
+        testID="Password"
         value={password}
         onChangeText={setPassword}
-        secureTextEntry
+        secureTextEntry={true}
+        textContentType="oneTimeCode" // 👈 esto evita el generador automático
+  autoComplete="off"            // 👈 previene autocompletado
+  importantForAutofill="no"
       />
 
        {/* Confirm password */}
       <TextInput
         style={styles.input}
         placeholder="Confirm Password"
+        testID="Confirm"
         value={confirmPassword}
         onChangeText={setConfirmPassword}
-        secureTextEntry
+        secureTextEntry={true}
+        textContentType="oneTimeCode" 
+        autoComplete="off"            // 👈 previene autocompletado
+        importantForAutofill="no"
       />
       {/* Name */}
       <TextInput
             style={styles.input}
             placeholder="Name"
+            testID="Name"
             value={name}
             onChangeText={setName}
           />
@@ -136,6 +146,7 @@ export default function SignUpScreen() {
           <TextInput
             style={styles.input}
             placeholder="Last Name"
+            testID="LastName"
             value={lastName}
             onChangeText={setLastName}
           />

@@ -1,19 +1,21 @@
 import React, { useState, useCallback } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Alert } from "react-native";
 import { auth, db } from "../../firebaseConfig";
-import { doc, getDoc, collection, query, where, getDocs, deleteDoc, } from "firebase/firestore";
+import { doc, getDoc, collection, query, where, getDocs, deleteDoc } from "firebase/firestore";
 import { useRouter, useFocusEffect } from "expo-router";
 import ConnectedUserCarousel from "../ConnectedCarrousel";
-import styles from "../styles/stylesfamily";
+import styles from "../styles/stylehealthcare";
 
 const HealthcareScreen = () => {
   const router = useRouter();
   const [userData, setUserData] = useState<any>(null);
   const [connectedElderly, setConnectedElderly] = useState<any[]>([]);
-  const [pendingCount, setPendingCount] = useState(0);
+  const [pendingConnections, setPendingConnections] = useState(0);
+  const [pendingAppointments, setPendingAppointments] = useState(0);
+
+  const user = auth.currentUser;
 
   const loadUserInfo = async () => {
-    const user = auth.currentUser;
     if (user) {
       try {
         const docRef = doc(db, "users", user.uid);
@@ -28,13 +30,11 @@ const HealthcareScreen = () => {
   };
 
   const loadConnectedElderly = async () => {
-    const currentUserId = auth.currentUser?.uid;
-    if (!currentUserId) return;
-
+    if (!user) return;
     try {
       const q = query(
         collection(db, "connectionRequests"),
-        where("toUserId", "==", currentUserId),
+        where("toUserId", "==", user.uid),
         where("status", "==", "accepted")
       );
 
@@ -47,10 +47,7 @@ const HealthcareScreen = () => {
 
         const elderlyDoc = await getDoc(doc(db, "users", elderlyId));
         if (elderlyDoc.exists()) {
-          elderlyList.push({
-            id: elderlyDoc.id,
-            ...elderlyDoc.data(),
-          });
+          elderlyList.push({ id: elderlyDoc.id, ...elderlyDoc.data() });
         }
       }
 
@@ -60,28 +57,36 @@ const HealthcareScreen = () => {
     }
   };
 
-  const loadPendingCount = async () => {
-    const user = auth.currentUser;
+  const loadPendingCounts = async () => {
     if (!user) return;
 
     try {
-      const q = query(
+      // Pending connections
+      const connectionQuery = query(
         collection(db, "connectionRequests"),
         where("toUserId", "==", user.uid),
         where("status", "==", "pending")
       );
-      const snapshot = await getDocs(q);
-      setPendingCount(snapshot.size);
+      const connectionSnapshot = await getDocs(connectionQuery);
+      setPendingConnections(connectionSnapshot.size);
+
+      // Pending appointments
+      const appointmentsQuery = query(
+        collection(db, "appointments"),
+        where("toUserId", "==", user.uid),
+        where("status", "==", "pending")
+      );
+      const appointmentsSnapshot = await getDocs(appointmentsQuery);
+      setPendingAppointments(appointmentsSnapshot.size);
     } catch (error) {
-      console.error("Error loading pending count:", error);
+      console.error("Error loading pending counts:", error);
     }
   };
 
   const disconnectElderly = async (elderlyId: string) => {
-    try {
-      const user = auth.currentUser;
-      if (!user) return;
+    if (!user) return;
 
+    try {
       const q = query(
         collection(db, "connectionRequests"),
         where("fromUserId", "==", elderlyId),
@@ -107,12 +112,12 @@ const HealthcareScreen = () => {
     }
   };
 
-  // Auto-refresh when the screen is focused
+  // Auto-refresh when screen is focused
   useFocusEffect(
     useCallback(() => {
       loadUserInfo();
       loadConnectedElderly();
-      loadPendingCount();
+      loadPendingCounts();
     }, [])
   );
 
@@ -127,23 +132,22 @@ const HealthcareScreen = () => {
           <>
             <Text style={styles.connectionText}>Connected Elderly Users:</Text>
             <ConnectedUserCarousel
-  data={connectedElderly}
-  onPrimaryAction={(id: any) =>
-    router.push({ pathname: "/CalendarScreen", params: { elderlyId: id } })
-  }
-  primaryLabel="Calendar"
-  onSecondaryAction={(id: any) =>
-    router.push({ pathname: "/TrackedSymptoms", params: { elderlyId: id } })
-  }
-  secondaryLabel="Symptoms"
-  showDisconnect={true}
-  onDisconnect={disconnectElderly}
-
-onTertiaryAction={(id: any) =>
-  router.push({ pathname: "/MedicalHistory", params: { elderlyId: id } })
-}
-tertiaryLabel="Medical History"
-/>
+              data={connectedElderly}
+              onPrimaryAction={(id: any) =>
+                router.push({ pathname: "/CalendarScreen", params: { elderlyId: id } })
+              }
+              primaryLabel="Calendar"
+              onSecondaryAction={(id: any) =>
+                router.push({ pathname: "/TrackedSymptoms", params: { elderlyId: id } })
+              }
+              secondaryLabel="Symptoms"
+              onTertiaryAction={(id: any) =>
+                router.push({ pathname: "/MedicalHistory", params: { elderlyId: id } })
+              }
+              tertiaryLabel="Medical History"
+              showDisconnect={true}
+              onDisconnect={disconnectElderly}
+            />
           </>
         ) : (
           <Text style={styles.connectionText}>
@@ -151,13 +155,23 @@ tertiaryLabel="Medical History"
           </Text>
         )}
       </ScrollView>
-
-      <TouchableOpacity style={styles.button} onPress={() => router.push("/ManageConnections")}>
+          {/* Botón: gestionar conexiones */}
+      <TouchableOpacity style={styles.button} onPress={() => router.push("/CalendarScreen")}>
+        <Text style={styles.buttonText}>My Calendar</Text>
+      </TouchableOpacity>
+      {/* Botón: gestionar citas */}
+      <TouchableOpacity style={styles.button} onPress={() => router.push("/ManageAppointments")}>
         <Text style={styles.buttonText}>
-          📩 {pendingCount} pending connection{pendingCount !== 1 ? 's' : ''}
+          {pendingAppointments} pending appointment{pendingAppointments !== 1 ? "s" : ""}
         </Text>
       </TouchableOpacity>
-      
+
+      {/* Botón: gestionar conexiones */}
+      <TouchableOpacity style={styles.button} onPress={() => router.push("/ManageConnections")}>
+        <Text style={styles.buttonText}>
+          {pendingConnections} pending connection{pendingConnections !== 1 ? "s" : ""}
+        </Text>
+      </TouchableOpacity>
     </>
   );
 };

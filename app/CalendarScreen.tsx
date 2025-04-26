@@ -247,7 +247,7 @@ const CalendarScreen = () => {
   const { elderlyId } = useLocalSearchParams();
   const realElderlyId = Array.isArray(elderlyId) ? elderlyId[0] : elderlyId || auth.currentUser?.uid;
   const isElderly = userData?.userType === "Elderly";
-  const isFamily = userData?.userType === "Family";
+  const isHealthcare = userData?.userType === "Healthcare";
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -306,7 +306,111 @@ const CalendarScreen = () => {
 
     loadReminders();
   }, []);
+  useEffect(() => {
+    const loadAppointments = async () => {
+      
+      const currentUser = auth.currentUser;
+      if (!currentUser) return;
+  
+      const q = query(
+        collection(db, "appointments"),
+        where("status", "in", ["accepted", "attended"]),
+        where("fromUserId", "==", realElderlyId) // 👈 ahora sí usamos elderlyId
+      );
+      
+      
+      const q2 = query(
+        collection(db, "appointments"),
+        where("status", "in", ["accepted", "attended"]),
+        where("toUserId", "==", currentUser.uid)
+      );
+      
+  
+      const [fromSnapshot, toSnapshot] = await Promise.all([getDocs(q), getDocs(q2)]);
+      const allDocs = [...fromSnapshot.docs, ...toSnapshot.docs];
+  
+      const appointments: Reminder[] = [];
+  
+      for (const docSnap of allDocs) {
+        const data = docSnap.data();
+        const dateObj = new Date(data.date?.toDate?.() || data.date);
+  
+        let elderlyName = "Elderly";
+        let healthcareName = "Healthcare";
+  
+        const elderlySnap = await getDoc(doc(db, "users", data.fromUserId));
+        if (elderlySnap.exists()) {
+          const edata = elderlySnap.data();
+          elderlyName = `${edata.name || ""} ${edata.lastName || ""}`.trim();
+        }
+  
+        const healthcareSnap = await getDoc(doc(db, "users", data.toUserId));
+        if (healthcareSnap.exists()) {
+          const hdata = healthcareSnap.data();
+          healthcareName = `${hdata.name || ""} ${hdata.lastName || ""}`.trim();
+        }
+  
+        const title = `Appointment: ${elderlyName} with ${healthcareName}`;
+  
+        appointments.push({
+          id: docSnap.id,
+          title,
+          datetime: dateObj.toISOString(),
+          status: data.status,
+        });
+      }
+  
+      // Añadir a allReminders
+      setAllReminders((prev) => [...prev, ...appointments]);
+  
+      // Marcar fechas
+      const updatedMarks = { ...markDates };
+      appointments.forEach((r) => {
+        const date = r.datetime.split("T")[0];
+        if (!updatedMarks[date]) {
+          updatedMarks[date] = { marked: true, dots: [{ color: "#007AFF" }] };
+        } else {
+          updatedMarks[date].dots?.push({ color: "#007AFF" });
+        }
+      });
+  
+      setMarkDates(updatedMarks);
+    };
+  
+    loadAppointments();
+  }, []);
 
+  useEffect(() => {
+  if (!allReminders.length) return;
+
+  const mergedMarks: Record<string, MarkedDate> = {};
+  const typeByDate: Record<string, Set<string>> = {};
+
+  allReminders.forEach((item) => {
+    const date = item.datetime.split("T")[0];
+    if (!typeByDate[date]) typeByDate[date] = new Set();
+    typeByDate[date].add(item.status === "appointment" ? "appointment" : "reminder");
+  });
+
+  Object.entries(typeByDate).forEach(([date, types]) => {
+    let dotColor = "#4CAF50"; // 🟢 verde por defecto
+
+    if (types.has("reminder") && types.has("appointment")) {
+      dotColor = "#9b59b6"; // 🟣 violeta si ambos
+    } else if (types.has("appointment")) {
+      dotColor = "#007AFF"; // 🔵 azul si solo appointment
+    }
+
+    mergedMarks[date] = {
+      marked: true,
+      dots: [{ color: dotColor }],
+    };
+  });
+
+  setMarkDates(mergedMarks);
+}, [allReminders]);
+
+  
   useEffect(() => {
     const fetchCompletedInstances = async () => {
       if (!realElderlyId) return;
@@ -373,7 +477,10 @@ const CalendarScreen = () => {
     });
     const reminderId = item.id.split("-")[0];
     const instanceId = item.id;
-    const isDone = completedInstanceIds.includes(instanceId);
+    const isDone =
+    item.status === "attended" ||
+    (item.status !== "appointment" && completedInstanceIds.includes(instanceId));
+  
 
     const markDone = async () => {
       try {
@@ -392,6 +499,28 @@ const CalendarScreen = () => {
         Alert.alert("Error", "Could not mark as done.");
       }
     };
+    const markAppointmentAsAttended = async (appointmentId: string) => {
+      try {
+        await updateDoc(doc(db, "appointments", appointmentId), {
+          status: "attended",
+        });
+    
+        setReminders((prev) =>
+          prev.map((r) =>
+            r.id === appointmentId ? { ...r, status: "attended" } : r
+          )
+        );
+        setAllReminders((prev) =>
+          prev.map((r) =>
+            r.id === appointmentId ? { ...r, status: "attended" } : r
+          )
+        );
+      } catch (error) {
+        console.error("Error marking appointment as attended:", error);
+        Alert.alert("Error", "Could not mark appointment as attended.");
+      }
+    };
+    
     
     
     const removeReminder = () => {
@@ -450,6 +579,33 @@ const CalendarScreen = () => {
         ]
       );
     };    
+    const cancelAppointment = (appointmentId: string) => {
+      Alert.alert(
+        "Cancel Appointment?",
+        "Are you sure you want to cancel this appointment?",
+        [
+          {
+            text: "Yes",
+            style: "destructive",
+            onPress: async () => {
+              try {
+                // Eliminar directamente la cita
+                await deleteDoc(doc(db, "appointments", appointmentId));
+    
+                // Actualizar pantalla
+                setReminders((prev) => prev.filter((r) => r.id !== appointmentId));
+                setAllReminders((prev) => prev.filter((r) => r.id !== appointmentId));
+              } catch (error) {
+                console.error("Error deleting appointment:", error);
+                Alert.alert("Error", "Could not cancel appointment.");
+              }
+            },
+          },
+          { text: "Cancel", style: "cancel" },
+        ]
+      );
+    };
+       
 
     return (
       <View style={[styles.card, isDone && styles.cardDone]}>
@@ -459,18 +615,37 @@ const CalendarScreen = () => {
         </Text>
         <Text style={styles.cardTime}>{time}</Text>
 
-        {!isDone && isElderly && (
-          <View style={styles.buttonRow}>
-            <TouchableOpacity style={styles.doneButton} onPress={markDone}>
-              <Text style={styles.buttonText}>DONE</Text>
-            </TouchableOpacity>
+        {!isDone && isElderly && item.status !== "appointment" && (
+  <View style={styles.buttonRow}>
+    <TouchableOpacity style={styles.doneButton} onPress={markDone}>
+      <Text style={styles.buttonText}>DONE</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style={styles.deleteButton} onPress={removeReminder}>
+      <Text style={styles.buttonText}>DELETE</Text>
+    </TouchableOpacity>
+  </View>
+)}
 
-              <TouchableOpacity style={styles.deleteButton} onPress={removeReminder}>
-                <Text style={styles.buttonText}>DELETE</Text>
-              </TouchableOpacity>
-            
-          </View>
-        )}
+        {item.status === "appointment" && userData?.userType === "Healthcare" && (
+  <View style={styles.buttonRow}>
+    <TouchableOpacity
+  style={styles.doneButton}
+  onPress={() => markAppointmentAsAttended(item.id)}
+>
+  <Text style={styles.buttonText}>ATTENDED</Text>
+</TouchableOpacity>
+
+    <TouchableOpacity
+      style={styles.deleteButton}
+      onPress={() => cancelAppointment(item.id)} // 👈 ahora sí se pasa el ID
+    >
+      <Text style={styles.buttonText}>CANCEL</Text>
+    </TouchableOpacity>
+    
+  </View>
+)}
+
+        
       </View>
     );
   };

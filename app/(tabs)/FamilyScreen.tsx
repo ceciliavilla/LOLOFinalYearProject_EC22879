@@ -242,19 +242,39 @@ export default RelativesScreen;
                   <>
                     <Text style={styles.connectionText}>You are connected to:</Text>
                     <View style={{ marginBottom: 32 }}>
-                      <ConnectedUserCarousel
-                        data={connectedElderly}
-                        onPrimaryAction={(id) =>
-                          router.push({ pathname: "/RemindersScreen", params: { elderlyId: id } })
-                        }
-                        onSecondaryAction={(id) =>
-                          router.push({ pathname: "/CalendarScreen", params: { elderlyId: id } })
-                        }
-                        onDisconnect={disconnectElderly}
-                        primaryLabel="Add Reminders"
-                        secondaryLabel="Calendar"
-                        showDisconnect={true}
-                      />
+                    <ConnectedUserCarousel
+  data={connectedElderly}
+  onPrimaryAction={(id) =>
+    router.push({ pathname: "/RemindersScreen", params: { elderlyId: id } })
+  }
+  primaryLabel="Add Reminders"
+
+  onSecondaryAction={(id) =>
+    router.push({ pathname: "/CalendarScreen", params: { elderlyId: id } })
+  }
+  secondaryLabel="Calendar"
+
+  onTertiaryAction={(id) =>
+    router.push({ pathname: "/MedicalHistory", params: { elderlyId: id } })
+  }
+  tertiaryLabel="Medical History"
+
+  onFourthAction={(id) =>
+    router.push({ pathname: "/BookAppointment", params: { elderlyId: id } })
+  }
+  fourthLabel="Book Appointment"
+  
+  onFifthAction={(id) =>
+    router.push({ pathname: "/CheckPosts", params: { elderlyId: id } })
+  }
+  fifthLabel="View Posts"
+  
+
+
+  onDisconnect={disconnectElderly}
+  showDisconnect={true}
+/>
+
                     </View>
                   </>
                 ) : (

@@ -5,21 +5,27 @@ import { auth, db } from "../firebaseConfig";
 import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 import styles from "./styles/styleappointments";
 import moment from "moment";
+import { useLocalSearchParams } from "expo-router";
+
 
 export default function BookAppointmentScreen() {
   const [connectedHealthcare, setConnectedHealthcare] = useState<any[]>([]);
   const [selectedDates, setSelectedDates] = useState<Record<string, Date>>({});
   const [showPickerId, setShowPickerId] = useState<string | null>(null);
+  const { elderlyId } = useLocalSearchParams();
+  const realElderlyId = Array.isArray(elderlyId) ? elderlyId[0] : elderlyId || auth.currentUser?.uid;
+
+
 
   const user = auth.currentUser;
 
   useEffect(() => {
     const fetchConnections = async () => {
-      if (!user) return;
+      if (!realElderlyId) return;
 
       const q = query(
         collection(db, "connectionRequests"),
-        where("fromUserId", "==", user.uid),
+        where("fromUserId", "==", realElderlyId),
         where("status", "==", "accepted")
       );
 
@@ -59,7 +65,7 @@ export default function BookAppointmentScreen() {
 
     try {
       await addDoc(collection(db, "appointments"), {
-        fromUserId: user?.uid,
+        fromUserId: realElderlyId,
         toUserId: healthcareId,
         date: date,
         status: "pending",
@@ -75,7 +81,7 @@ export default function BookAppointmentScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>📅 Book an Appointment</Text>
+      <Text style={styles.title}>Book an Appointment </Text>
 
       {connectedHealthcare.map((hc) => (
         <View key={hc.id} style={styles.card}>

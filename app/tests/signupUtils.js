@@ -12,4 +12,17 @@
     }
     return 'OK';
   }*/
+ // signupUtils.ts
+
+/*export function validateForm({ email, password, confirmPassword, userType, name, lastName, dateOfBirth }) {
+  if (!email || !password || !confirmPassword) return false;
+  if (password !== confirmPassword) return false;
+
+  if (userType === 'Elderly') {
+    if (!name || !lastName || !dateOfBirth) return false;
+  }
+
+  return true;
+}*/
+
   

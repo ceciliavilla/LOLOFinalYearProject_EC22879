@@ -2,7 +2,7 @@
 import { StyleSheet, Dimensions } from 'react-native';
 
 const { width } = Dimensions.get('window');
-const ITEM_WIDTH = width * 0.6;
+const ITEM_WIDTH = width * 0.7;
 const SPACING = 10;
 
 const styles = StyleSheet.create({
@@ -14,20 +14,29 @@ const styles = StyleSheet.create({
     padding: 14,
   alignItems: 'center',
   justifyContent: 'center',
-  height: 250,
+  height: 350,
   },
   name: {
     fontSize: 18,
     color: '#fff',
     marginBottom: 10,
+    fontWeight:'bold',
   },
   button: {
     backgroundColor: '#b2f5dc',
-    borderRadius: 8,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    marginTop: 10,
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    marginVertical: 6,
+    alignItems: 'center',
+    width: '100%',
   },
+  buttonText: {
+    color: '#1a202c',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  
   disconnectButton: {
     backgroundColor: '#e63946',
     borderRadius: 8,
@@ -45,7 +54,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   buttonText: {
-    color: '#034d36',
+    color: 'darkgreen',
     fontSize: 14,
     fontWeight: '600',
   },
