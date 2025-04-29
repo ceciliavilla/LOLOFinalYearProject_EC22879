@@ -285,7 +285,7 @@ export default RelativesScreen;
           
                 {userData && (
                   <View style={styles.container}>
-                    <TouchableOpacity style={styles.button} onPress={() => router.push("/Connections")}>
+                    <TouchableOpacity style={styles.button} onPress={() => router.push("/ElderlyConnectionsRq")}>
                       <Text style={styles.buttonText}>Request Elderly Connection</Text>
                     </TouchableOpacity>
                   </View>

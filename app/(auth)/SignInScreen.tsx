@@ -14,6 +14,12 @@ export default function SignInScreen() {
 
 
   const handleSignIn = async () => {
+
+    //Check that all fields are filled
+    if (!email || !password) {
+      Alert.alert("Error", "Please fill in all fields.");
+      return;
+    }
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
@@ -26,6 +32,7 @@ export default function SignInScreen() {
   
       const userType = userDoc.data().userType; // Getting type of user
 
+      //Redirect depending on the Usertype
       if (userType === "Elderly") {
         router.replace("/(tabs)/ElderlyScreen");
       } else if (userType === "Family") {
@@ -50,6 +57,7 @@ export default function SignInScreen() {
         style={styles.input}
         placeholder="Email"
         value={email}
+        testID='Email'
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
@@ -58,16 +66,17 @@ export default function SignInScreen() {
       <TextInput
         style={styles.input}
         placeholder="Password"
+        testID='Password'
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleSignIn}>
+      <TouchableOpacity testID="signInButton"  style={styles.button} onPress={handleSignIn}>
         <Text style={styles.buttonText}>Sign In</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.push('/SignUpScreen')}>
+      <TouchableOpacity  onPress={() => router.push('/SignUpScreen')}>
         <Text style={styles.linkText}>Don't have an account? Sign Up</Text>
       </TouchableOpacity>
     </View>

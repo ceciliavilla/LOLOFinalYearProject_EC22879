@@ -148,7 +148,7 @@ export default function ProfileScreen() {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" />
-        <Text>Cargando perfil...</Text>
+        <Text>Loading...</Text>
       </View>
     );
   }
@@ -159,10 +159,10 @@ export default function ProfileScreen() {
       <Text style={styles.subtitle}>{user?.email}</Text>
 
       <Text style={styles.label}>Name</Text>
-      <TextInput style={styles.input} value={name} onChangeText={setName} />
+      <TextInput style={styles.input} value={name} testID="Name" onChangeText={setName} />
 
       <Text style={styles.label}>Last Name</Text>
-      <TextInput style={styles.input} value={lastName} onChangeText={setLastName} />
+      <TextInput style={styles.input} value={lastName} testID="Last Name" onChangeText={setLastName} />
 
       {userType === 'Elderly' && (
   <>
@@ -188,6 +188,7 @@ export default function ProfileScreen() {
     )}
   </>
 )}
+
 {userType === 'Healthcare' && (
   <>
     <Text style={styles.label}>Speciality</Text>
@@ -196,6 +197,7 @@ export default function ProfileScreen() {
       value={speciality}
       onChangeText={setSpeciality}
       placeholder=""
+      testID='Speciality'
     />
   </>
 )}
@@ -207,6 +209,10 @@ export default function ProfileScreen() {
         onChangeText={setCurrentPassword}
         secureTextEntry
         placeholder="Enter current password"
+        testID='Current Password'
+        textContentType="oneTimeCode" 
+        autoComplete="off"            
+        importantForAutofill="no"
       />
 
       <Text style={styles.label}>New Password</Text>
@@ -216,6 +222,10 @@ export default function ProfileScreen() {
         onChangeText={setNewPassword}
         secureTextEntry
         placeholder="6 characters"
+        testID='New Password'
+        textContentType="oneTimeCode" 
+        autoComplete="off"            
+        importantForAutofill="no"
       />
 
       <Text style={styles.label}>Confirm New Password</Text>
@@ -225,11 +235,15 @@ export default function ProfileScreen() {
         onChangeText={setConfirmPassword}
         secureTextEntry
         placeholder="Repeat new password"
+        testID='Confirm New Password'
+        textContentType="oneTimeCode" 
+        autoComplete="off"            
+        importantForAutofill="no"
       />
 
       <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.saveButton} onPress={confirmSaveChanges}>
-          <Text style={styles.saveButtonText}>Save Changes</Text>
+        <TouchableOpacity testID="saveButton" style={styles.saveButton} onPress={confirmSaveChanges}>
+          <Text  style={styles.saveButtonText}>Save Changes</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} onPress={handleLogout}>

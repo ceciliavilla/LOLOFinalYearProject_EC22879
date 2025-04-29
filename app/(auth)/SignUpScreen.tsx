@@ -38,21 +38,24 @@ export default function SignUpScreen() {
   };
 
   const handleSignUp = async () => {
+    
     // Check if all fields are filled
     if (!email || !password || !confirmPassword) {
       Alert.alert("Error", "Please fill in all fields.");
       return;
     }
+    // Check if Passwords match
     if (password !== confirmPassword) {
       Alert.alert("Error", "Passwords do not match");
       return;
     }
 
-    
+    //Check if all fields are filled
     if (!name.trim() || !lastName.trim()) {
       Alert.alert("Error", "Please fill in all fields.");
       return;
     }
+
     //Check if Additional fields have been filled
     if (userType === "Elderly" && !birthDate) {
       Alert.alert("Error", "Please select your birth date.");
@@ -74,41 +77,41 @@ export default function SignUpScreen() {
         lastName: lastName.trim(),
       };
       
+  
       if (userType === "Elderly") {
         userData.birthDate = (birthDate ?? new Date()).toISOString().split('T')[0];
       }
       if (userType === "Healthcare") {
-  userData.speciality = speciality.trim();
-}
+        userData.speciality = speciality.trim();
+      }
 
       //Save user data in Firestore
       await setDoc(doc(db, "users", user.uid), userData);
 
       Alert.alert("Success", "Account created!");
       router.replace('/'); 
-    } catch (error: unknown) {
-  const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
-  Alert.alert("Error", errorMessage);
-}
+        } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "An error occurred";
+        Alert.alert("Error", errorMessage);
+        }
 
   };
 
   return (
+
     <View style={styles.container}>
       <Text style={styles.title}>Sign Up</Text>
       
-      {/* Email */}
       <TextInput
         style={styles.input}
         placeholder="Email"
-        testID="emailInput"
+        testID="Email"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
       />
       
-      {/* Password */}
       <TextInput
         style={styles.input}
         placeholder="Password"
@@ -116,48 +119,42 @@ export default function SignUpScreen() {
         value={password}
         onChangeText={setPassword}
         secureTextEntry={true}
-        textContentType="oneTimeCode" // 👈 esto evita el generador automático
-  autoComplete="off"            // 👈 previene autocompletado
-  importantForAutofill="no"
+        textContentType="oneTimeCode" 
+        autoComplete="off"            
+        importantForAutofill="no"
       />
 
-       {/* Confirm password */}
       <TextInput
         style={styles.input}
         placeholder="Confirm Password"
-        testID="Confirm"
+        testID="Confirm Password"
         value={confirmPassword}
         onChangeText={setConfirmPassword}
         secureTextEntry={true}
         textContentType="oneTimeCode" 
-        autoComplete="off"            // 👈 previene autocompletado
+        autoComplete="off"            
         importantForAutofill="no"
       />
-      {/* Name */}
+
       <TextInput
-            style={styles.input}
-            placeholder="Name"
-            testID="Name"
-            value={name}
-            onChangeText={setName}
-          />
+        style={styles.input}
+        placeholder="Name"
+        testID="Name"
+        value={name}
+        onChangeText={setName}
+      />
 
-          {/* Last name */}
-          <TextInput
-            style={styles.input}
-            placeholder="Last Name"
-            testID="LastName"
-            value={lastName}
-            onChangeText={setLastName}
-          />
+      <TextInput
+        style={styles.input}
+        placeholder="Last Name"
+        testID="Last Name"
+        value={lastName}
+        onChangeText={setLastName}
+      />
 
-
-      {/* Additional fields for Elderly users */}
-      {userType === "Elderly" && (
+      {userType === "Elderly" && ( //Additional fields for Elderly Users
         <>
-        
-          {/* Select date of birth */}
-          <TouchableOpacity onPress={() => setShowDatePicker(true)}  style={styles.birthDateButton}>
+          <TouchableOpacity onPress={() => setShowDatePicker(true)} testID='birthDateButton' style={styles.birthDateButton}>
             <Text style={styles.birthDateText}> {birthDate ? birthDate.toDateString() : "Select Birth Date"} </Text>
           </TouchableOpacity>
 
@@ -165,6 +162,7 @@ export default function SignUpScreen() {
           <DateTimePicker
           value={birthDate || new Date()}  
           mode="date"
+          testID='birthDatePicker'
           display="default"
           onChange={(event, selectedDate) => {
            if (selectedDate) {
@@ -177,17 +175,21 @@ export default function SignUpScreen() {
       
         </>
       )}
-      {userType === "Healthcare" && (
-
-<TextInput
-style={styles.input}
-placeholder="Speciality"
-value={speciality}
-onChangeText={setSpeciality}
-/>)}
+      
+      {userType === "Healthcare" && ( //Additional fields for Helthcare Users
+        
+        <TextInput 
+        style={styles.input}
+        placeholder="Speciality"
+        testID="Speciality"
+        value={speciality}
+        onChangeText={setSpeciality}
+        />)}
 
       <Text style={styles.label}>Select User Type:</Text>
+
       <View style={styles.userTypeContainer}>
+
         <TouchableOpacity
           style={[styles.userTypeButton, userType === 'Elderly' && styles.selectedButton]}
           onPress={() => setUserType('Elderly')}
@@ -210,7 +212,7 @@ onChangeText={setSpeciality}
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleSignUp}>
+      <TouchableOpacity style={styles.button} onPress={handleSignUp} testID="signUpButton">
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
 

@@ -254,10 +254,10 @@ const Reminders = () => {
       return;
     }
 
-    if (repeat !== "none" && (!repeatInterval || repeatInterval < 1)) {
+    /*if (repeat !== "none" && (!repeatInterval || repeatInterval < 1)) {
       Alert.alert("Invalid repeat interval", "Please enter a valid repeat interval.");
       return;
-    }
+    }*/
 
     const completedDate = new Date(date);
     completedDate.setHours(time.getHours(), time.getMinutes(), 0);
@@ -350,6 +350,7 @@ const Reminders = () => {
         placeholder="Reminder Title"
         value={title}
         onChangeText={setTitle}
+        testID="Reminder Title"
         style={styles.input}
         accessibilityLabel="Reminder Title"
       />
@@ -416,13 +417,13 @@ const Reminders = () => {
         </>
       )}
 
-      <TouchableOpacity onPress={saveReminder} style={styles.saveButton} accessibilityLabel="Save reminder">
+      <TouchableOpacity testID="SaveButton" onPress={saveReminder} style={styles.saveButton} accessibilityLabel="Save reminder">
         <Text style={styles.buttonText}>{loading ? "Saving..." : "Save"}</Text>
         {loading && <ActivityIndicator size="small" color="#fff" />}
       </TouchableOpacity>
 
-      <DateTimePickerModal isVisible={ChooseDate} mode="date" onConfirm={DateElection} onCancel={() => setChooseDate(false)} />
-      <DateTimePickerModal isVisible={ChooseTime} mode="time" onConfirm={TimeElection} onCancel={() => setChooseTime(false)} />
+      <DateTimePickerModal testID="datePicker" isVisible={ChooseDate} mode="date" onConfirm={DateElection} onCancel={() => setChooseDate(false)} />
+      <DateTimePickerModal testID="timePicker" isVisible={ChooseTime} mode="time" onConfirm={TimeElection} onCancel={() => setChooseTime(false)} />
     </ScrollView>
   );
 };

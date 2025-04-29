@@ -301,7 +301,7 @@ const ElderlyScreen = () => {
   const formatBirthDate = (birthDate: string | number | Date) => {
     if (!birthDate) return "N/A";
     const date = birthDate instanceof Timestamp ? birthDate.toDate() : new Date(birthDate);
-    return date.toLocaleDateString('en-US', { day: '2-digit', month: 'long' });
+    return date.toLocaleDateString('en-US', { day: '2-digit', month: 'long', year: 'numeric' });
   };
 
   return (
@@ -342,15 +342,19 @@ const ElderlyScreen = () => {
               <Text style={styles.buttonText}>CALENDAR</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.button} onPress={() => router.push("/Speechwsymptoms")}>
+            <TouchableOpacity style={styles.button} onPress={() => router.push("/SpeechRecognition")}>
               <Text style={styles.buttonText}>SPEAK TO LOLO</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.myConnectionButton} onPress={() => router.push("/MyconnectionScreen")}>
+            <TouchableOpacity style={styles.myConnectionButton} onPress={() => router.push("/MyContactsScreen")}>
               <Text style={styles.myConnectionButtonText}>MY CONTACTS</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.myConnectionButton} onPress={() => router.push("/findHealthcare")}>
+            <TouchableOpacity style={styles.myConnectionButton} onPress={() => router.push("/FindHealthcare")}>
               <Text style={styles.myConnectionButtonText}>CONNECT WITH HEALTHCARE</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.myConnectionButton} onPress={() => router.push("/CheckPosts")}>
+              <Text style={styles.myConnectionButtonText}>POSTS</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.Emergencybutton} onPress={() => router.push("/EmergencyScreen")}>

@@ -82,7 +82,7 @@ const TrackedSymptoms = () => {
                 ))}
               </>
             )}
-            <Text style={styles.subtitle}>High Symptoms:</Text>
+            <Text style={styles.subtitle}>Symptoms:</Text>
             {entry.symptoms?.map((s: string) => (
               <Text key={s} style={styles.symptom}>
                 - {s} ({entry.severity[s]})

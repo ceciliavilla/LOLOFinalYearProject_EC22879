@@ -435,6 +435,7 @@ import { getAuth } from 'firebase/auth';
 import { firebaseApp } from '../firebaseConfig'; 
 import styles from './styles/stylespeech';
 
+
 interface Disease {
   id: string;
   name: string;

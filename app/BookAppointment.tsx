@@ -62,22 +62,46 @@ export default function BookAppointmentScreen() {
       Alert.alert("Select a date first");
       return;
     }
-
+  
     try {
+      // 🔥 Nuevo: Comprobar si ya existe una cita para ese Healthcare y esa fecha
+      const existingQuery = query(
+        collection(db, "appointments"),
+        where("fromUserId", "==", realElderlyId),
+        where("toUserId", "==", healthcareId),
+        where("status", "in", ["pending", "accepted"])
+      );
+  
+      const existingSnapshot = await getDocs(existingQuery);
+      const dateOnly = date.toISOString().split("T")[0]; // Solo la fecha, no la hora
+  
+      const alreadyExists = existingSnapshot.docs.some(doc => {
+        const appointmentDate = doc.data().date?.toDate?.() || doc.data().date;
+        const appointmentDateOnly = new Date(appointmentDate).toISOString().split("T")[0];
+        return appointmentDateOnly === dateOnly;
+      });
+  
+      if (alreadyExists) {
+        Alert.alert("Error", "You already have an appointment request for that day with this healthcare.");
+        return;
+      }
+  
+      // 🔹 Si no existe, crear la cita
       await addDoc(collection(db, "appointments"), {
         fromUserId: realElderlyId,
         toUserId: healthcareId,
-        date: date,
+        date: date.toISOString(),
         status: "pending",
         createdAt: new Date(),
       });
-
+  
       Alert.alert("Appointment requested!", `Your request for ${moment(date).format("LL")} has been sent.`);
     } catch (err) {
       console.error("Error sending appointment request", err);
       Alert.alert("Error", "Could not send appointment request.");
     }
   };
+  
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -85,7 +109,7 @@ export default function BookAppointmentScreen() {
 
       {connectedHealthcare.map((hc) => (
         <View key={hc.id} style={styles.card}>
-          <Text style={styles.name}>👩‍⚕️ {hc.name} {hc.lastName}</Text>
+          <Text style={styles.name}>{hc.name} {hc.lastName}</Text>
 
           <TouchableOpacity
             style={styles.dateButton}

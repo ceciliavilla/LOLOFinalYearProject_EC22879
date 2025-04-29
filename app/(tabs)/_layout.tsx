@@ -109,7 +109,7 @@ export default function TabsLayout() {
         <Tabs.Screen
         name="CheckPosts"
         options={{
-          href: userType === 'Elderly'  ? undefined : null,
+          href: userType === ''  ? undefined : null,
           title: 'Posts',
           tabBarIcon: ({ color, focused }: { color: string; focused: boolean }) => (
             <TabIcon icon={icons.chat} color={color} name="Posts" focused={focused} />

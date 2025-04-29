@@ -1,212 +1,4 @@
-/*import React, { useState, useEffect } from "react";
-import { View, Text, ActivityIndicator, FlatList } from "react-native";
-import { auth, db } from "../firebaseConfig";
-import { collection, getDocs, query, where, doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
-import { Calendar } from "react-native-calendars";
-import { useLocalSearchParams } from 'expo-router';
-import styles from "./styles/stylescalendar";
 
-
-
-
-type Reminder = {
-  id: string;
-  title: string;
-  datetime: string;
-  repeat?: string;
-  repeatInterval?: number;
-  status?: string;
-};
-
-type MarkedDate = {
-  marked?: boolean;
-  dots?: { color: string }[];
-  selected?: boolean;
-  selectedColor?: string;
-};
-
-const Calendar2 = () => {
-  const [markDates, setMarkDates] = useState<Record<string, MarkedDate>>({});
-  const [loading, setLoading] = useState(true);
-  const [reminders, setReminders] = useState<Reminder[]>([]);
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [allReminders, setAllReminders] = useState<Reminder[]>([]);
-  const [elderlyName, setElderlyName] = useState("");
-  const { elderlyId } = useLocalSearchParams();
-  const realElderlyId = elderlyId || auth.currentUser?.uid;
-
-
-
-  // 🔹 Obtener nombre del usuario elderly
-  useEffect(() => {
-    const fetchName = async () => {
-      const user = auth.currentUser;
-      if (!realElderlyId) return;
-
-
-      const docSnap = await getDoc(doc(db, "users", realElderlyId));
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        setElderlyName(`${data.name} ${data.lastName}`);
-      }
-    };
-
-    fetchName();
-  }, []);
-
-  // 🔹 Cargar recordatorios del usuario elderly logueado
-  useEffect(() => {
-    const loadReminders = async () => {
-      try {
-        const user = auth.currentUser;
-        if (!user) return;
-
-        const remindersRef = collection(db, "reminders");
-        const remindersQuery = query(
-          remindersRef,
-          where("elderlyId", "==", realElderlyId)
-        );
-        const remindersfromDB = await getDocs(remindersQuery);
-
-        let remindersList: Record<string, Reminder[]> = {};
-        let expandedReminders: Reminder[] = [];
-
-        remindersfromDB.forEach((reminderdoc) => {
-          const data = reminderdoc.data();
-          const initialDate = new Date(data.datetime);
-          const repeat = data.repeat || "none";
-          const interval = data.repeatInterval || 1;
-          const occurrences = 10;
-
-          for (let i = 0; i < (repeat === "none" ? 1 : occurrences); i++) {
-            let newDate = new Date(initialDate);
-
-            if (repeat === "daily")
-              newDate.setDate(newDate.getDate() + i * interval);
-            if (repeat === "weekly")
-              newDate.setDate(newDate.getDate() + i * 7 * interval);
-            if (repeat === "monthly")
-              newDate.setMonth(newDate.getMonth() + i * interval);
-
-            const dateStr = newDate.toISOString().split("T")[0];
-
-            if (!remindersList[dateStr]) {
-              remindersList[dateStr] = [];
-            }
-
-            const reminder: Reminder = {
-              id: `${reminderdoc.id}-${i}`,
-              datetime: newDate.toISOString(),
-              title: data.title,
-              repeat: data.repeat,
-              repeatInterval: data.repeatInterval,
-              status: data.status,
-            };
-
-            remindersList[dateStr].push(reminder);
-            expandedReminders.push(reminder);
-          }
-        });
-
-        let calendarMarks: {
-          [key: string]: { marked: boolean; dots: { color: string }[] };
-        } = {};
-
-        Object.keys(remindersList).forEach((date) => {
-          const color = remindersList[date].length === 1 ? "green" : "red";
-          calendarMarks[date] = { marked: true, dots: [{ color }] };
-        });
-
-        setAllReminders(expandedReminders);
-        setMarkDates(calendarMarks);
-      } catch (error) {
-        console.error("ERROR", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadReminders();
-  }, []);
-
-  // 🔹 Al hacer click en un día
-  const handleDayPress = (day: { dateString: string }) => {
-    setSelectedDate(day.dateString);
-
-    const filteredReminders = allReminders
-      .filter((reminder) => reminder.datetime.split("T")[0] === day.dateString)
-      .sort(
-        (a, b) =>
-          new Date(a.datetime).getTime() - new Date(b.datetime).getTime()
-      );
-
-    setReminders(filteredReminders);
-  };
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Calendar for {elderlyName || "..."}</Text>
-
-      {loading ? (
-        <ActivityIndicator size="large" color="#007bff" />
-      ) : (
-        <>
-          <Calendar
-            markedDates={{
-              ...markDates,
-              ...(selectedDate
-                ? {
-                    [selectedDate]: {
-                      ...(markDates[selectedDate] || {}),
-                      selected: true,
-                      selectedColor: "#009D71",
-                    },
-                  }
-                : {}),
-            }}
-            markingType="multi-dot"
-            theme={{
-              todayTextColor: "red",
-              selectedDayBackgroundColor: "blue",
-              arrowColor: "#009D71",
-            }}
-            onDayPress={handleDayPress}
-          />
-
-          {selectedDate && (
-            <View style={styles.remindersContainer}>
-              <Text style={styles.title}>Reminders for {selectedDate}</Text>
-              {reminders.length === 0 ? (
-                <Text style={styles.noRemindersText}>No reminders</Text>
-              ) : (
-                <FlatList
-                  data={reminders}
-                  keyExtractor={(item) => item.id}
-                  renderItem={({ item }) => {
-                    const dateObj = new Date(item.datetime);
-                    const hours = dateObj.getHours().toString().padStart(2, "0");
-                    const minutes = dateObj.getMinutes().toString().padStart(2, "0");
-                    const time = `${hours}:${minutes}`;
-
-                    return (
-                      <View style={styles.reminderItem}>
-                        <Text style={styles.reminderText}>
-                          {item.title || "No title"} - {time}
-                        </Text>
-                      </View>
-                    );
-                  }}
-                />
-              )}
-            </View>
-          )}
-        </>
-      )}
-    </View>
-  );
-};
-
-export default Calendar2;*/
 
 import React, { useState, useEffect } from "react";
 import { View, Text, ActivityIndicator, FlatList, TouchableOpacity, Alert, } from "react-native";
@@ -225,6 +17,7 @@ type Reminder = {
   repeat?: string;
   repeatInterval?: number;
   status?: string;
+  type: "reminder" | "appointment"; 
 };
 
 type MarkedDate = {
@@ -249,6 +42,7 @@ const CalendarScreen = () => {
   const isElderly = userData?.userType === "Elderly";
   const isHealthcare = userData?.userType === "Healthcare";
 
+  //Load User Data 
   useEffect(() => {
     const fetchUserData = async () => {
       const user = auth.currentUser;
@@ -259,6 +53,7 @@ const CalendarScreen = () => {
     fetchUserData();
   }, []);
 
+  // Load Elderly User
   useEffect(() => {
     const fetchElderlyName = async () => {
       if (!realElderlyId) return;
@@ -271,6 +66,7 @@ const CalendarScreen = () => {
     fetchElderlyName();
   }, []);
 
+  // Load Reminders
   useEffect(() => {
     const loadReminders = async () => {
       if (!realElderlyId) return;
@@ -306,30 +102,29 @@ const CalendarScreen = () => {
 
     loadReminders();
   }, []);
+
+  // Load Appointments 
   useEffect(() => {
     const loadAppointments = async () => {
-      
       const currentUser = auth.currentUser;
       if (!currentUser) return;
   
       const q = query(
         collection(db, "appointments"),
         where("status", "in", ["accepted", "attended"]),
-        where("fromUserId", "==", realElderlyId) // 👈 ahora sí usamos elderlyId
+        where("fromUserId", "==", realElderlyId)
       );
-      
-      
+  
       const q2 = query(
         collection(db, "appointments"),
         where("status", "in", ["accepted", "attended"]),
         where("toUserId", "==", currentUser.uid)
       );
-      
   
       const [fromSnapshot, toSnapshot] = await Promise.all([getDocs(q), getDocs(q2)]);
       const allDocs = [...fromSnapshot.docs, ...toSnapshot.docs];
   
-      const appointments: Reminder[] = [];
+      const uniqueAppointments: Record<string, Reminder> = {};
   
       for (const docSnap of allDocs) {
         const data = docSnap.data();
@@ -352,67 +147,59 @@ const CalendarScreen = () => {
   
         const title = `Appointment: ${elderlyName} with ${healthcareName}`;
   
-        appointments.push({
+        uniqueAppointments[docSnap.id] = {
           id: docSnap.id,
           title,
           datetime: dateObj.toISOString(),
           status: data.status,
-        });
+          type: "appointment", 
+        };
       }
   
-      // Añadir a allReminders
-      setAllReminders((prev) => [...prev, ...appointments]);
+      const uniqueAppointmentsList = Object.values(uniqueAppointments);
   
-      // Marcar fechas
-      const updatedMarks = { ...markDates };
-      appointments.forEach((r) => {
-        const date = r.datetime.split("T")[0];
-        if (!updatedMarks[date]) {
-          updatedMarks[date] = { marked: true, dots: [{ color: "#007AFF" }] };
-        } else {
-          updatedMarks[date].dots?.push({ color: "#007AFF" });
-        }
-      });
-  
-      setMarkDates(updatedMarks);
+      setAllReminders((prev) => [...prev, ...uniqueAppointmentsList]);
     };
   
     loadAppointments();
   }, []);
+  
 
   useEffect(() => {
-  if (!allReminders.length) return;
-
-  const mergedMarks: Record<string, MarkedDate> = {};
-  const typeByDate: Record<string, Set<string>> = {};
-
-  allReminders.forEach((item) => {
-    const date = item.datetime.split("T")[0];
-    if (!typeByDate[date]) typeByDate[date] = new Set();
-    typeByDate[date].add(item.status === "appointment" ? "appointment" : "reminder");
-  });
-
-  Object.entries(typeByDate).forEach(([date, types]) => {
-    let dotColor = "#4CAF50"; // 🟢 verde por defecto
-
-    if (types.has("reminder") && types.has("appointment")) {
-      dotColor = "#9b59b6"; // 🟣 violeta si ambos
-    } else if (types.has("appointment")) {
-      dotColor = "#007AFF"; // 🔵 azul si solo appointment
-    }
-
-    mergedMarks[date] = {
-      marked: true,
-      dots: [{ color: dotColor }],
-    };
-  });
-
-  setMarkDates(mergedMarks);
-}, [allReminders]);
-
+    if (!allReminders.length) return;
+  
+    const mergedMarks: Record<string, MarkedDate> = {};
+    const typeByDate: Record<string, Set<string>> = {};
+  
+    allReminders.forEach((item) => {
+      const date = item.datetime.split("T")[0];
+      if (!typeByDate[date]) typeByDate[date] = new Set();
+      typeByDate[date].add(item.type);
+    });
+  
+    Object.entries(typeByDate).forEach(([date, types]) => {
+      const dots = [];
+  
+      if (types.has("reminder")) {
+        dots.push({ key: "reminder", color: "green" }); // 🟢 verde
+      }
+  
+      if (types.has("appointment")) {
+        dots.push({ key: "appointment", color: "orange" }); // 🔵 azul
+      }
+  
+      mergedMarks[date] = {
+        marked: true,
+        dots,
+      };
+    });
+  
+    setMarkDates(mergedMarks);
+  }, [allReminders]);
+  
   
   useEffect(() => {
-    const fetchCompletedInstances = async () => {
+    const loadCompletedInstances = async () => {
       if (!realElderlyId) return;
 
       const q = query(collection(db, "reminders"), where("elderlyId", "==", realElderlyId));
@@ -434,7 +221,7 @@ const CalendarScreen = () => {
       setCompletedInstanceIds(doneIds);
     };
 
-    fetchCompletedInstances();
+    loadCompletedInstances();
   }, []);
 
   const generateRepeats = (data: any, originalId: string): Reminder[] => {
@@ -456,6 +243,7 @@ const CalendarScreen = () => {
         repeat,
         repeatInterval: interval,
         status: data.status,
+        type: "reminder",
       });
     }
 
@@ -470,7 +258,7 @@ const CalendarScreen = () => {
     setReminders(filtered);
   };
 
-  const renderReminder = ({ item }: { item: Reminder }) => {
+  const displayReminder = ({ item }: { item: Reminder }) => {
     const time = new Date(item.datetime).toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
@@ -615,7 +403,7 @@ const CalendarScreen = () => {
         </Text>
         <Text style={styles.cardTime}>{time}</Text>
 
-        {!isDone && isElderly && item.status !== "appointment" && (
+        {!isDone && isElderly && item.type !== "appointment" && (
   <View style={styles.buttonRow}>
     <TouchableOpacity style={styles.doneButton} onPress={markDone}>
       <Text style={styles.buttonText}>DONE</Text>
@@ -625,8 +413,21 @@ const CalendarScreen = () => {
     </TouchableOpacity>
   </View>
 )}
+ 
+ {item.type === "appointment" && userData?.userType !== "Healthcare" && (
+  <View style={styles.buttonRow}>
 
-        {item.status === "appointment" && userData?.userType === "Healthcare" && (
+    <TouchableOpacity
+      style={styles.deleteButton}
+      onPress={() => cancelAppointment(item.id)} // 👈 ahora sí se pasa el ID
+    >
+      <Text style={styles.buttonText}>CANCEL</Text>
+    </TouchableOpacity>
+    
+  </View>
+)}
+
+        {item.type === "appointment" && userData?.userType === "Healthcare" && (
   <View style={styles.buttonRow}>
     <TouchableOpacity
   style={styles.doneButton}
@@ -659,6 +460,7 @@ const CalendarScreen = () => {
       ) : (
         <>
           <Calendar
+              markingType="multi-dot"
             markedDates={{
               ...markDates,
               ...(selectedDate && {
@@ -669,7 +471,7 @@ const CalendarScreen = () => {
                 },
               }),
             }}
-            markingType="multi-dot"
+         
             theme={{ todayTextColor: "red", arrowColor: "#009D71" }}
             onDayPress={handleDayPress}
           />
@@ -684,7 +486,7 @@ const CalendarScreen = () => {
                 <FlatList
                   data={reminders}
                   keyExtractor={(item) => item.id}
-                  renderItem={renderReminder}
+                  renderItem={displayReminder}
                 />
               )}
             </View>
