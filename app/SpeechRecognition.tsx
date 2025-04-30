@@ -434,6 +434,11 @@ import { getFirestore, collection, getDocs, doc, getDoc, addDoc, serverTimestamp
 import { getAuth } from 'firebase/auth';
 import { firebaseApp } from '../firebaseConfig'; 
 import styles from './styles/stylespeech';
+//import { ASSEMBLYAI_API_KEY } from '@env';
+
+import Constants from 'expo-constants';
+import { router } from 'expo-router';
+
 
 
 interface Disease {
@@ -453,7 +458,7 @@ export default function SpeechScreen() {
   const db = getFirestore(firebaseApp);
   const auth = getAuth();
   const userId = auth.currentUser?.uid;
-  const ASSEMBLYAI_API_KEY = "3f48dff71e3b4d239fc526e04a1d9564";
+  const ASSEMBLYAI_API_KEY = Constants.expoConfig?.extra?.expoPublicAssemblyaiApiKey;
   console.log("USER ID:", userId);
 
   const SYMPTOM_KEYWORDS: Record<string, string[]> = {
@@ -751,12 +756,24 @@ export default function SpeechScreen() {
           })}
         </View>
       )}
+      
 
       {recommendation && (
         <View style={styles.recommendationContainer}>
           <Text style={styles.recommendationText}>{recommendation}</Text>
         </View>
+      
       )}
+      {recommendation && (
+  <TouchableOpacity
+    style={styles.Appointmentbutton}
+    onPress={() => router.push('/BookAppointment')}
+  >
+    <Text style={styles.AppointmentbuttonText}>Book an Appointment</Text>
+  </TouchableOpacity>
+)}
+
+      
     </ScrollView>
   );
 }

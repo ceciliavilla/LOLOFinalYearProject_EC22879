@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   recommendationContainer: {
-    backgroundColor: 'lightblue', 
+    backgroundColor: 'lightgrey', 
     padding: 15,
     borderRadius: 10,
     marginTop: 15,
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
   recommendationText: {
     fontSize: 16,
-    color: 'blue',
+    color: 'black',
     fontWeight: 'bold',
   },
   loadingText: {
@@ -82,8 +82,26 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 4,
-  }  
-  
+  }, 
+  Appointmentbutton: {
+    backgroundColor: 'lightblue', 
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  AppointmentbuttonText: {
+    color: 'darkblue',
+    fontSize: 16,
+    fontWeight: 'bold',
+    shadowColor: 'blue',
+    shadowOpacity: 0.1,
+    borderRadius: 12,
+    width: '48%',
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 4,
+    elevation: 4,
+  },
 });
 
 export default styles;

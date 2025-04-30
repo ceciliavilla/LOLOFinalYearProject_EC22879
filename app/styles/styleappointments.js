@@ -2,18 +2,26 @@ import { StyleSheet } from 'react-native';
 
 const styles =  StyleSheet.create({
   container: {
+    flex: 1,
     padding: 20,
-    backgroundColor: '#e0f7f7',
+    backgroundColor: '#009D71',
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: '#00695c',
+    color: 'lightgreen',
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: 'white',
     textAlign: 'center',
   },
   card: {
-    backgroundColor: '#ffffff',
+    backgroundColor: 'white',
     padding: 16,
     borderRadius: 12,
     marginBottom: 16,
@@ -25,34 +33,34 @@ const styles =  StyleSheet.create({
   },
   name: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#00796b',
+    fontWeight: 'bold',
+    color: '#009D71',
     marginBottom: 10,
   },
   dateButton: {
-    backgroundColor: '#00b3b3',
+    backgroundColor: 'blue',
     padding: 10,
     borderRadius: 8,
     alignItems: 'center',
     marginBottom: 8,
   },
   dateButtonText: {
-    color: '#fff',
+    color: 'white',
     fontWeight: 'bold',
   },
   selectedDate: {
     fontSize: 14,
-    color: '#333',
+    color: 'white',
     marginBottom: 10,
   },
   appointmentButton: {
-    backgroundColor: '#00796b',
+    backgroundColor: 'lightgreen',
     padding: 12,
     borderRadius: 10,
     alignItems: 'center',
   },
   appointmentButtonText: {
-    color: '#fff',
+    color: '#009D71',
     fontWeight: 'bold',
   },
 });

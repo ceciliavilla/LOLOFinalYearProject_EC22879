@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Linking, Alert} from 'react-native';
 import styles from './styles/stylesemergency'; 
+import Constants from 'expo-constants';
 
 const EMERGENCY_NUMBER = '+44 07709263463';
-
+//const EMERGENCY_NUMBER = Constants.expoConfig?.extra?.emergencynumber;
 
 const EmergencyScreen = () => {
   const [countdown, setCountdown] = useState<number | null>(null);

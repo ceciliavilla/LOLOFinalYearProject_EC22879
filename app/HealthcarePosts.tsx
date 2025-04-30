@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from "react-native";
 import { useRouter, SearchParams } from "expo-router";
-import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { getFirestore, collection, addDoc, serverTimestamp, getDocs } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { firebaseApp } from "../firebaseConfig";
 import { useSearchParams } from "expo-router/build/hooks";
@@ -14,6 +14,8 @@ const CreateHealthcarePost = () => {
   
   const db = getFirestore(firebaseApp);
   const auth = getAuth();
+  
+
 
   const handleSend = async () => {
     const currentUser = auth.currentUser;
@@ -25,11 +27,17 @@ const CreateHealthcarePost = () => {
     }
   
     try {
+      const userDoc = await getDocs(collection(db, "users"));
+    const docSnap = userDoc.docs.find(doc => doc.id === currentUser.uid);
+    const userData = docSnap?.data();
       await addDoc(collection(db, `users/${elderlyId}/healthcare_posts`), {
         message,
         createdAt: serverTimestamp(),
-        fromHealthcareId: currentUser.uid,
-        fromHealthcareName: currentUser.email || "Healthcare"
+      fromHealthcareId: currentUser.uid,
+      fromHealthcareName: userData?.name || "Healthcare",
+      fromHealthcareLastName: userData?.lastName || "",
+      fromHealthcareuserType: userData?.userType || "",
+
       });
   
       // 🎉 ALERTA DE ÉXITO
