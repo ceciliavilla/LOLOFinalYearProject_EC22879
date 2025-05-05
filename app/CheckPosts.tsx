@@ -7,6 +7,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { query, orderBy } from "firebase/firestore";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
+import styles from "./styles/stylesposts";
 
 
 
@@ -23,7 +24,7 @@ const CheckPosts = () => {
 
   useFocusEffect(
     useCallback(() => {
-      const fetchPosts = async () => {
+      const loadPosts = async () => {
         if (!realElderlyId) return;
   
         try {
@@ -51,7 +52,7 @@ const CheckPosts = () => {
         }
       };
   
-      fetchPosts();
+      loadPosts();
     }, [realElderlyId])
   );
   
@@ -61,7 +62,7 @@ const CheckPosts = () => {
 
       <TouchableOpacity
         style={styles.generalAppointmentButton}
-        onPress={() => router.push("/BookAppointment")}
+        onPress={() => router.push({ pathname: "/BookAppointment", params: { elderlyId: realElderlyId } })}
       >
         <Text style={styles.generalAppointmentButtonText}>Book an Appointment</Text>
       </TouchableOpacity>
@@ -86,67 +87,3 @@ const CheckPosts = () => {
 
 export default CheckPosts;
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    paddingTop: 50,
-    backgroundColor: "#009D71",
-    flexGrow: 1,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-    color: "lightgreen",
-  },
-  generalAppointmentButton: {
-    backgroundColor: "lightblue",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    alignItems: "center",
-    marginBottom: 24,
-  },
-  generalAppointmentButtonText: {
-    color: "darkblue",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  noData: {
-    textAlign: "center",
-    color: "lightgrey",
-    fontSize: 16,
-    marginTop: 20,
-  },
-  card: {
-    backgroundColor: "#ffffff",
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 16,
-    borderLeftWidth: 6,
-    borderLeftColor: "white",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  date: {
-    fontSize: 13,
-    color: "#888",
-    marginBottom: 6,
-    fontStyle: "italic",
-  },
-  from: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#00796b",
-    marginBottom: 8,
-  },
-  message: {
-    fontSize: 16,
-    color: "#333",
-    lineHeight: 22,
-  },
-});

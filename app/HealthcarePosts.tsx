@@ -5,6 +5,7 @@ import { getFirestore, collection, addDoc, serverTimestamp, getDocs } from "fire
 import { getAuth } from "firebase/auth";
 import { firebaseApp } from "../firebaseConfig";
 import { useSearchParams } from "expo-router/build/hooks";
+import styles from "./styles/styleshealthposts";
 
 const CreateHealthcarePost = () => {
   const [message, setMessage] = useState("");
@@ -40,20 +41,19 @@ const CreateHealthcarePost = () => {
 
       });
   
-      // 🎉 ALERTA DE ÉXITO
-      Alert.alert("✅ Sent", "Your message was sent successfully.", [
+      Alert.alert("Sent", "Your message was sent successfully.", [
         { text: "OK", onPress: () => router.back() }
       ]);
     } catch (error) {
       console.error("Error sending post:", error);
-      Alert.alert("❌ Error", "Could not send message.");
+      Alert.alert("Error", "Could not send message.");
     }
   };
   
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>📝 New Message for Patient</Text>
+      <Text style={styles.title}>New Message</Text>
       <TextInput
         style={styles.input}
         multiline
@@ -70,43 +70,3 @@ const CreateHealthcarePost = () => {
 
 export default CreateHealthcarePost;
 
-const styles = StyleSheet.create({
-    container: {
-    Top: 90,
-      flex: 1,
-      backgroundColor: "#e0f7f7",
-      padding: 20,
-      justifyContent: "center",
-    },
-    title: {
-      fontSize: 22,
-      fontWeight: "bold",
-      marginTop: 12,
-      marginBottom: 24,
-      textAlign: "center",
-      color: "#00796b",
-    },
-    input: {
-      borderColor: "#009999",
-      borderWidth: 1,
-      borderRadius: 10,
-      padding: 14,
-      fontSize: 16,
-      backgroundColor: "#fff",
-      minHeight: 100,
-      textAlignVertical: "top",
-    },
-    button: {
-      marginTop: 20,
-      backgroundColor: "#00b3b3",
-      padding: 14,
-      borderRadius: 10,
-      alignItems: "center",
-    },
-    buttonText: {
-      color: "#fff",
-      fontWeight: "bold",
-      fontSize: 16,
-    },
-  });
-  

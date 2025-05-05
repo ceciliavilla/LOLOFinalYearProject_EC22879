@@ -20,13 +20,13 @@ const FindHealthcareScreen = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const fetchHealthcareUsers = async () => {
+    const loadHealthcareUsers = async () => {
       const currentUser = auth.currentUser;
       if (!currentUser) return;
 
-      // Fetch all healthcare professionals
-      const q = query(collection(db, "users"), where("userType", "==", "Healthcare"));
-      const querySnapshot = await getDocs(q);
+      // Search all the healthcare professionals users
+      const healthcare = query(collection(db, "users"), where("userType", "==", "Healthcare"));
+      const querySnapshot = await getDocs(healthcare);
 
       const users: HealthcareUser[] = querySnapshot.docs.map((doc) => {
         const data = doc.data();
@@ -64,7 +64,7 @@ const FindHealthcareScreen = () => {
       setSentRequests(sentIds);
     };
 
-    fetchHealthcareUsers();
+    loadHealthcareUsers();
   }, []);
 
   const sendConnectionRequest = async (healthcareUser: HealthcareUser) => {
@@ -100,7 +100,7 @@ const FindHealthcareScreen = () => {
   };
 
   const renderItem = ({ item }: { item: HealthcareUser }) => {
-    if (connectedHealthcareIds.has(item.id)) return null; // Oculta si ya está conectado
+    if (connectedHealthcareIds.has(item.id)) return null; //Hide if is already connected
     const alreadySent = sentRequests.has(item.id);
 
     return (

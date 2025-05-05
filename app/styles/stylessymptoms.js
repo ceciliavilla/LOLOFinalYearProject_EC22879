@@ -3,38 +3,36 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
     container: {
       padding: 16,
-      backgroundColor: "#e6f2f2",
+      backgroundColor: "#009D71",
+      flex:1,
     },
     title: {
       fontSize: 22,
       fontWeight: "bold",
       marginBottom: 16,
       textAlign: "center",
-      color: "#004d4d",
+      color: "lightgreen",
     },
     noData: {
       textAlign: "center",
       fontSize: 16,
       marginTop: 20,
-      color: "#666",
+      color: "white",
       fontStyle: "italic",
     },
     card: {
-      backgroundColor: "#ffffff",
+      backgroundColor: "white",
       borderRadius: 12,
       padding: 18,
       marginBottom: 14,
       borderLeftWidth: 6,
-      borderLeftColor: "#00b3b3",
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.08,
-      shadowRadius: 5,
+      borderLeftColor: "lightgreen",
+     
       elevation: 3,
     },
     date: {
       fontSize: 13,
-      color: "#666",
+      color: "grey",
       marginBottom: 10,
       fontStyle: "italic",
     },
@@ -47,18 +45,18 @@ const styles = StyleSheet.create({
     },
     symptom: {
       fontSize: 15,
-      color: "#222",
+      color: "black",
       paddingVertical: 1,
     },
     disease: {
       fontSize: 15,
-      color: "#cc3300",
+      color: "red",
       fontWeight: "600",
       paddingLeft: 4,
       paddingVertical: 2,
     },
     button: {
-      backgroundColor: "#00b3b3",
+      backgroundColor: "lightgreen",
       padding: 14,
       borderRadius: 10,
       alignItems: "center",
@@ -66,7 +64,7 @@ const styles = StyleSheet.create({
       marginBottom: 40
     },
     buttonText: {
-      color: "#fff",
+      color: "#009D71",
       fontWeight: "bold",
       fontSize: 16
     },

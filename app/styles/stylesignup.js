@@ -25,18 +25,18 @@ const styles = StyleSheet.create({
       color: 'lightgreen'
     },
     birthDateButton: {
-      backgroundColor: 'transparent', // Keeps it clean
+      backgroundColor: 'transparent', 
       paddingHorizontal: 10,
       borderRadius: 8,
       width: '80%',
       height: 40,
       borderWidth: 1,
-      borderColor: '#fff', // White border
+      borderColor: 'white', 
       justifyContent: 'center',
       marginBottom: 10,
     },
     birthDateText: {
-      color: 'lightgreen', // Makes the text white
+      color: 'lightgreen', 
     },
     label: {
       fontSize: 16,

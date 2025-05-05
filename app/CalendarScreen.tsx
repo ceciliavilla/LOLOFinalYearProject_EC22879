@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from "react";
 import { View, Text, ActivityIndicator, FlatList, TouchableOpacity, Alert, } from "react-native";
 import { Calendar } from "react-native-calendars";
@@ -44,18 +42,18 @@ const CalendarScreen = () => {
 
   //Load User Data 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const loadUserData = async () => {
       const user = auth.currentUser;
       if (!user) return;
       const docSnap = await getDoc(doc(db, "users", user.uid));
       if (docSnap.exists()) setUserData(docSnap.data());
     };
-    fetchUserData();
+    loadUserData();
   }, []);
 
   // Load Elderly User
   useEffect(() => {
-    const fetchElderlyName = async () => {
+    const loadElderlyName = async () => {
       if (!realElderlyId) return;
       const docSnap = await getDoc(doc(db, "users", realElderlyId));
       if (docSnap.exists()) {
@@ -63,7 +61,7 @@ const CalendarScreen = () => {
         setElderlyName(`${data.name} ${data.lastName}`);
       }
     };
-    fetchElderlyName();
+    loadElderlyName();
   }, []);
 
   // Load Reminders
@@ -181,11 +179,11 @@ const CalendarScreen = () => {
       const dots = [];
   
       if (types.has("reminder")) {
-        dots.push({ key: "reminder", color: "green" }); // 🟢 verde
+        dots.push({ key: "reminder", color: "green" }); 
       }
   
       if (types.has("appointment")) {
-        dots.push({ key: "appointment", color: "orange" }); // 🔵 azul
+        dots.push({ key: "appointment", color: "orange" }); 
       }
   
       mergedMarks[date] = {
@@ -250,7 +248,7 @@ const CalendarScreen = () => {
     return list;
   };
 
-  const handleDayPress = (day: { dateString: string }) => {
+  const manageDayPress = (day: { dateString: string }) => {
     setSelectedDate(day.dateString);
     const filtered = allReminders
       .filter((r) => r.datetime.split("T")[0] === day.dateString)
@@ -377,10 +375,10 @@ const CalendarScreen = () => {
             style: "destructive",
             onPress: async () => {
               try {
-                // Eliminar directamente la cita
+                // Delete Appointment
                 await deleteDoc(doc(db, "appointments", appointmentId));
     
-                // Actualizar pantalla
+                // Refresh screen
                 setReminders((prev) => prev.filter((r) => r.id !== appointmentId));
                 setAllReminders((prev) => prev.filter((r) => r.id !== appointmentId));
               } catch (error) {
@@ -419,7 +417,7 @@ const CalendarScreen = () => {
 
     <TouchableOpacity
       style={styles.deleteButton}
-      onPress={() => cancelAppointment(item.id)} // 👈 ahora sí se pasa el ID
+      onPress={() => cancelAppointment(item.id)} 
     >
       <Text style={styles.buttonText}>CANCEL</Text>
     </TouchableOpacity>
@@ -438,7 +436,7 @@ const CalendarScreen = () => {
 
     <TouchableOpacity
       style={styles.deleteButton}
-      onPress={() => cancelAppointment(item.id)} // 👈 ahora sí se pasa el ID
+      onPress={() => cancelAppointment(item.id)} 
     >
       <Text style={styles.buttonText}>CANCEL</Text>
     </TouchableOpacity>
@@ -473,7 +471,7 @@ const CalendarScreen = () => {
             }}
          
             theme={{ todayTextColor: "red", arrowColor: "#009D71" }}
-            onDayPress={handleDayPress}
+            onDayPress={manageDayPress}
           />
 
           {selectedDate && (

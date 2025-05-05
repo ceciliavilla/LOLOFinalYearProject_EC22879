@@ -54,7 +54,7 @@ export default function ProfileScreen() {
     loadUserData();
   }, []);
 
-  const handleSaveChanges = async () => {
+  const SaveChanges = async () => {
     try {
       if (user) {
         if (!currentPassword) {
@@ -112,7 +112,7 @@ export default function ProfileScreen() {
   const confirmSaveChanges = () => {
     Alert.alert('Are you sure?', 'Do you want to update your profile?', [
       { text: 'Cancel', style: 'cancel' },
-      { text: 'Update', onPress: () => handleSaveChanges() }
+      { text: 'Update', onPress: () => SaveChanges() }
     ]);
   };
 

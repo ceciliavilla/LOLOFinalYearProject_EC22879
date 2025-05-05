@@ -3,21 +3,21 @@ import { StyleSheet, Platform, StatusBar } from 'react-native';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#e6f7fa', // azul suave
+    backgroundColor: '#e6f7fa', 
     paddingHorizontal: 24,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 20 : 60, // espacio seguro arriba
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 20 : 60, 
     justifyContent: 'flex-start',
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#007ea7', // azul elegante
+    color: '#007ea7', 
     marginBottom: 40,
     textAlign: 'center',
     letterSpacing: 1,
   },
   button: {
-    backgroundColor: '#009D71', // verde oscuro
+    backgroundColor: '#009D71', 
     paddingVertical: 18,
     borderRadius: 16,
     marginBottom: 24,

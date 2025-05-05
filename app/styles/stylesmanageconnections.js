@@ -3,13 +3,13 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E3F2F9', // azul muy clarito
+    backgroundColor: '#009D71', // azul muy clarito
     padding: 20,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#003366', // azul profesional oscuro
+    color: 'lightgreen', // azul profesional oscuro
     marginBottom: 20,
   },
   requestBox: {

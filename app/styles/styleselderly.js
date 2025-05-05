@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   },
   summaryCard: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: 'white',
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 16,

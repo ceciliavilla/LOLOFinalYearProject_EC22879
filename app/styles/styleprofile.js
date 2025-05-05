@@ -4,7 +4,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 24,
     flex: 1,
-    backgroundColor: '#009D71', // verde fondo
+    backgroundColor: '#009D71', 
     paddingTop: 80,
   },
   title: {
@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    color: '#b2f5dc', // versión más suave de lightgreen
+    color: '#b2f5dc', 
     marginBottom: 24,
   },
   label: {
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   saveButton: {
-    backgroundColor: 'lightgreen', // verde clarito profesional
+    backgroundColor: 'lightgreen', 
     paddingVertical: 14,
     borderRadius: 12,
     width: '48%',
@@ -66,12 +66,12 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   saveButtonText: {
-    color: '#005f4a', // verde oscuro elegante
+    color: '#005f4a', 
     fontSize: 16,
     fontWeight: 'bold',
   },
   button: {
-    backgroundColor: '#e63946', // rojo elegante
+    backgroundColor: '#e63946', 
     paddingVertical: 14,
     borderRadius: 12,
     width: '48%',

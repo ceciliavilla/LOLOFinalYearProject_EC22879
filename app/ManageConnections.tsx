@@ -1,15 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import { auth, db } from '../firebaseConfig';
-import {
-  collection,
-  getDocs,
-  doc,
-  updateDoc,
-  query,
-  where,
-  getDoc,
-} from 'firebase/firestore';
+import {collection,getDocs,doc,updateDoc,query,where,getDoc,} from 'firebase/firestore';
 import styles from './styles/stylesmanageconnections';
 
 
@@ -17,7 +9,7 @@ export default function ManageConnectionsScreen() {
   const [requests, setRequests] = useState<any[]>([]);
 
   useEffect(() => {
-    const fetchRequests = async () => {
+    const loadRequests = async () => {
       const currentUserId = auth.currentUser?.uid;
       if (!currentUserId) return;
 
@@ -48,10 +40,10 @@ export default function ManageConnectionsScreen() {
       setRequests(requestsWithUserData);
     };
 
-    fetchRequests();
+    loadRequests();
   }, []);
 
-  const handleAccept = async (requestId: string) => {
+  const manageAccept = async (requestId: string) => {
     try {
       await updateDoc(doc(db, 'connectionRequests', requestId), {
         status: 'accepted',
@@ -73,7 +65,7 @@ export default function ManageConnectionsScreen() {
           </Text>
           <TouchableOpacity
             style={styles.acceptButton}
-            onPress={() => handleAccept(req.id)}
+            onPress={() => manageAccept(req.id)}
           >
             <Text style={styles.buttonText}>Accept</Text>
           </TouchableOpacity>

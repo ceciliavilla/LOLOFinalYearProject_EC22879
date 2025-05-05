@@ -7,7 +7,6 @@ import styles from './styles/stylesconnections';
 export default function SendConnectionRequest() {
   const [elderlyEmail, setElderlyEmail] = useState('');
   const [loading, setLoading] = useState(false);
-  //const [pendingConnections, setPendingConnections] = useState<String[]>([])
 
   const ManageSendRequest = async () => {
 

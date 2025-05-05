@@ -31,7 +31,7 @@ const TrackedSymptoms = () => {
     }
   }, [elderlyId]);
 
-  const fetchElderlyName = async () => {
+  const loadElderlyName = async () => {
     try {
       const userDocRef = collection(db, "users");
       const userDoc = await getDocs(userDocRef);
@@ -46,7 +46,7 @@ const TrackedSymptoms = () => {
   };
   
  
-      fetchElderlyName();
+      loadElderlyName();
 
   
 
@@ -54,17 +54,19 @@ const TrackedSymptoms = () => {
 
   return (
     
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
 <Text style={styles.title}>High Severity Symptoms from {elderlyName}</Text>
 <TouchableOpacity
   style={styles.button}
   onPress={() => router.push({ pathname: "/HealthcarePosts", params: { elderlyId } })}
 >
-  <Text style={styles.buttonText}>📩 Send a message to this patient</Text>
+  <Text style={styles.buttonText}>Send a message</Text>
 </TouchableOpacity>
+<ScrollView >
 {symptomLogs.length === 0 ? (
         <Text style={styles.noData}>No symptoms detected yet.</Text>
       ) : (
+        
         symptomLogs.map((entry) => (
           <View key={entry.id} style={styles.card}>
             <Text style={styles.date}>
@@ -91,8 +93,8 @@ const TrackedSymptoms = () => {
         ))
       )}
     
-
-    </ScrollView>
+      </ScrollView>
+    </View>
     
   );
 };

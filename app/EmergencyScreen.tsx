@@ -1,49 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Linking, Alert} from 'react-native';
+import { View, Text } from 'react-native';
 import styles from './styles/stylesemergency'; 
-import Constants from 'expo-constants';
-
-const EMERGENCY_NUMBER = '+44 07709263463';
-//const EMERGENCY_NUMBER = Constants.expoConfig?.extra?.emergencynumber;
 
 const EmergencyScreen = () => {
-  const [countdown, setCountdown] = useState<number | null>(null);
+  const [countdown, setCountdown] = useState<number>(10);
   const [calling, setCalling] = useState(false);
 
-  const startCountdown = (timeLeft: number) => {
-    setCountdown(timeLeft);
-
-    if (timeLeft <= 0) {
-      handleCall();
-      return;
-    }
-
-    setTimeout(() => {
-      startCountdown(timeLeft - 1);
-    }, 1000);
-  };
-
-  const handleCall = () => {
-    setCalling(true);
-
-    Alert.alert(
-      'Emergency Call',
-      `Do you want to call ${EMERGENCY_NUMBER}?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Call',
-          onPress: () => {
-            Linking.openURL(`tel:${EMERGENCY_NUMBER}`);
-          },
-        },
-      ]
-    );
-  };
-
-
   useEffect(() => {
-    startCountdown(10);
+    const timer = setInterval(() => {
+      setCountdown(prev => {
+        if (prev === 1) {
+          clearInterval(timer);
+          setCalling(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
   }, []);
 
   return (
@@ -51,11 +26,12 @@ const EmergencyScreen = () => {
       {!calling ? (
         <Text style={styles.countdown}>Calling in {countdown} seconds...</Text>
       ) : (
-        <Text style={styles.calling}>Opening call screen...</Text>
+        <Text style={styles.calling}>Calling 911</Text>
       )}
     </View>
   );
 };
 
 export default EmergencyScreen;
+
 

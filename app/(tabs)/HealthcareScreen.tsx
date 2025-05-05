@@ -96,7 +96,7 @@ const HealthcareScreen = () => {
 
       const snapshot = await getDocs(q);
       if (snapshot.empty) {
-        Alert.alert("Not Found", "No connection found with this user.");
+        Alert.alert("Not Found", "No connection found");
         return;
       }
 
@@ -112,7 +112,7 @@ const HealthcareScreen = () => {
     }
   };
 
-  // Auto-refresh when screen is focused
+  // Auto-refresh
   useFocusEffect(
     useCallback(() => {
       loadUserInfo();
@@ -151,7 +151,7 @@ const HealthcareScreen = () => {
           </>
         ) : (
           <Text style={styles.connectionText}>
-            You are not connected to any elderly users yet.
+            You are not connected to any elderly users
           </Text>
         )}
       </ScrollView>

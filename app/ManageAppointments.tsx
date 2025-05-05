@@ -1,15 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { auth, db } from '../firebaseConfig';
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  doc,
-  getDoc,
-  updateDoc,
-} from 'firebase/firestore';
+import {collection,query,where,getDocs,doc,getDoc,updateDoc,} from 'firebase/firestore';
 import styles from './styles/stylesmanageappoint';
 import moment from 'moment';
 
@@ -18,7 +10,7 @@ export default function ManageAppointmentsScreen() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchAppointments = async () => {
+    const loadAppointments = async () => {
       const currentUserId = auth.currentUser?.uid;
       if (!currentUserId) return;
 
@@ -55,7 +47,7 @@ export default function ManageAppointmentsScreen() {
       }
     };
 
-    fetchAppointments();
+    loadAppointments();
   }, []);
 
   const updateStatus = async (id: string, status: 'accepted' | 'rejected') => {
@@ -74,7 +66,7 @@ export default function ManageAppointmentsScreen() {
       Alert.alert(
         "Updated",
         `Appointment ${status}. ${
-          status === 'accepted' ? 'It will now appear in both calendars.' : ''
+          status === 'accepted' ? 'Added in both calendars.' : ''
         }`
       );
     } catch (err) {
@@ -93,13 +85,13 @@ export default function ManageAppointmentsScreen() {
 
       <View style={styles.buttonGroup}>
         <TouchableOpacity
-          style={[styles.button, { backgroundColor: '#4CAF50' }]}
+          style={[styles.button, { backgroundColor: 'green' }]}
           onPress={() => updateStatus(item.id, 'accepted')}
         >
           <Text style={styles.buttonText}>Accept</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.button, { backgroundColor: '#E74C3C' }]}
+          style={[styles.button, { backgroundColor: 'red' }]}
           onPress={() => updateStatus(item.id, 'rejected')}
         >
           <Text style={styles.buttonText}>Reject</Text>
@@ -113,9 +105,9 @@ export default function ManageAppointmentsScreen() {
       <Text style={styles.title}>Manage Appointments</Text>
 
       {loading ? (
-        <Text style={styles.subtitle}>Loading appointments...</Text>
+        <Text >Loading appointments...</Text>
       ) : appointments.length === 0 ? (
-        <Text style={styles.subtitle}>No pending appointments found.</Text>
+        <Text >No pending appointments</Text>
       ) : (
         <FlatList
           data={appointments}

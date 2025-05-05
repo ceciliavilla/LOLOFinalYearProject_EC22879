@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#E3F2F9",
+    backgroundColor: "#009D71",
     paddingHorizontal: 20,
     paddingTop: 40,
   },
@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "bold",
     marginBottom: 20,
-    color: "#003366",
+    color: "lightgreen",
   },
   card: {
     backgroundColor: "white",
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   nameText: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "black",
+    color: "#009D71",
   },
   specialityText: {
     fontSize: 14,

@@ -4,7 +4,7 @@ import { ImageSourcePropType } from 'react-native';
 import { useEffect, useState } from 'react';
 import { auth, db } from '../../firebaseConfig'; 
 import { doc, getDoc } from 'firebase/firestore';
-import styleslayout from '../styles/styleslayout'; // asegúrate de que la ruta sea correcta
+import styleslayout from '../styles/styleslayout'; 
 
 const icons = {
   lolo: require('../../assets/icons/Home4.png'),
@@ -44,7 +44,7 @@ export default function TabsLayout() {
   const [userType, setUserType] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchUserType = async () => {
+    const loadUserType = async () => {
       const uid = auth.currentUser?.uid;
       if (!uid) return;
 
@@ -54,13 +54,13 @@ export default function TabsLayout() {
       setUserType(data?.userType);
     };
 
-    fetchUserType();
+    loadUserType();
   }, []);
 
   if (!userType) {
     return (
       <View style={styleslayout.loadingContainer}>
-        <Text>Cargando usuario...</Text>
+        <Text>Loading User...</Text>
       </View>
     );
   }
@@ -109,7 +109,7 @@ export default function TabsLayout() {
         <Tabs.Screen
         name="CheckPosts"
         options={{
-          href: userType === ''  ? undefined : null,
+          href: userType === ''  ? undefined : null, //No added at the end
           title: 'Posts',
           tabBarIcon: ({ color, focused }: { color: string; focused: boolean }) => (
             <TabIcon icon={icons.chat} color={color} name="Posts" focused={focused} />

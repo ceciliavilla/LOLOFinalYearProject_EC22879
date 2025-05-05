@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
   countdown: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#b22222',
+    color: 'black',
   },
   calling: {
     fontSize: 28,

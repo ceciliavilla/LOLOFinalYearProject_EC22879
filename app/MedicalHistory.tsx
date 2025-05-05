@@ -31,7 +31,7 @@ const TrackedSymptoms = () => {
     }
   }, [elderlyId]);
 
-  const fetchElderlyName = async () => {
+  const loadElderlyName = async () => {
     try {
       const userDocRef = collection(db, "users");
       const userDoc = await getDocs(userDocRef);
@@ -46,56 +46,54 @@ const TrackedSymptoms = () => {
   };
   
  
-      fetchElderlyName();
+      loadElderlyName();
 
-  
-
-  
-
-  return (
     
-    <ScrollView contentContainerStyle={styles.container}>
-        
-<Text style={styles.title}>Symptoms Detected for {elderlyName}</Text>
-<TouchableOpacity
-  style={styles.button}
-  onPress={() => router.push({ pathname: "/HealthcarePosts", params: { elderlyId } })}
->
-  <Text style={styles.buttonText}>📩 Send a message to this patient</Text>
-</TouchableOpacity>
-{symptomLogs.length === 0 ? (
-        <Text style={styles.noData}>No symptoms detected yet.</Text>
-      ) : (
-        symptomLogs.map((entry) => (
-          <View key={entry.id} style={styles.card}>
-            <Text style={styles.date}>
-              {entry.createdAt?.toDate
-                ? moment(entry.createdAt.toDate()).format("LLL")
-                : "Unknown Date"}
-            </Text>
-            
-            {entry.flaggedDisease?.length > 0 && (
-              <>
-                <Text style={styles.subtitle}>Possible Diseases:</Text>
-                {entry.flaggedDisease.map((d: string) => (
-                  <Text key={d} style={styles.disease}> {d}</Text>
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Symptoms Detected for {elderlyName}</Text>
+    
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push({ pathname: "/HealthcarePosts", params: { elderlyId } })}
+        >
+          <Text style={styles.buttonText}>Send a message</Text>
+        </TouchableOpacity>
+    
+        <ScrollView >
+          {symptomLogs.length === 0 ? (
+            <Text style={styles.noData}>No symptoms detected yet.</Text>
+          ) : (
+            symptomLogs.map((entry) => (
+              <View key={entry.id} style={styles.card}>
+                <Text style={styles.date}>
+                  {entry.createdAt?.toDate
+                    ? moment(entry.createdAt.toDate()).format("LLL")
+                    : "Unknown Date"}
+                </Text>
+    
+                {entry.flaggedDisease?.length > 0 && (
+                  <>
+                    <Text style={styles.subtitle}>Possible Diseases:</Text>
+                    {entry.flaggedDisease.map((d: string) => (
+                      <Text key={d} style={styles.disease}> {d}</Text>
+                    ))}
+                  </>
+                )}
+    
+                <Text style={styles.subtitle}>Symptoms:</Text>
+                {entry.symptoms?.map((s: string) => (
+                  <Text key={s} style={styles.symptom}>
+                    - {s} ({entry.severity[s]})
+                  </Text>
                 ))}
-              </>
-            )}
-            <Text style={styles.subtitle}>Symptoms:</Text>
-            {entry.symptoms?.map((s: string) => (
-              <Text key={s} style={styles.symptom}>
-                - {s} ({entry.severity[s]})
-              </Text>       
-            ))}
-          </View>
-        ))
-      )}
-   
-
-    </ScrollView>
+              </View>
+            ))
+          )}
+        </ScrollView>
+      </View>
+    );
     
-  );
 };
 
 export default TrackedSymptoms; 

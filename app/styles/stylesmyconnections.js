@@ -3,13 +3,13 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E6F4F1', // verde clarito elegante
+    backgroundColor: '#E6F4F1', 
     padding: 20,
   },
   title: {
     fontSize: 26,
     fontWeight: '700',
-    color: '#00684a', // verde oscuro LOLO
+    color: '#00684a', 
     marginBottom: 24,
     textAlign: 'center',
   },
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   },
   removeButton: {
     marginTop: 16,
-    backgroundColor: '#e53e3e', // rojo suave
+    backgroundColor: 'red', 
     paddingVertical: 10,
     borderRadius: 10,
     alignItems: 'center',
